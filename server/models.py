@@ -70,8 +70,8 @@ class Menu(db.Model):
 class Booking(db.Model):
     __tablename__ = 'bookings'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # e.g., 'Corporate Event', 'Wedding'
-    event_date = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) 
+    event_date = db.Column(db.DateTime, nullable=False)  # e.g., 'Corporate Event', 'Wedding'
     event_type = db.Column(db.String(100), nullable=False)
     guest_count = db.Column(db.Integer, nullable=False)
     menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), nullable=False)
