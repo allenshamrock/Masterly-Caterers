@@ -11,7 +11,7 @@ print(secret_key)
 
 app=Flask(__name__)
 app.secret_key = '950f0f263d20fbb04b8a4b29a42c1377655a877c70df2ef1690d166bd5ff5198'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite///masterly.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///masterly.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
