@@ -97,7 +97,7 @@ class Booking(db.Model, SerializerMixin):
     event_type = db.Column(db.String(100), nullable=False)
     guest_count = db.Column(db.Integer, nullable=False)
     menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), nullable=False)
-    special_requests = db.Column(db.Text, nullable=True)
+    special_requests = db.Column(db.Text, nullable=False)
     booking_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', back_populates='bookings')
