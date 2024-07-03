@@ -1,21 +1,34 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from flask import request, jsonify,make_response
 from flask_restful import Resource
-from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
 from models import User, Booking, BlogPost, Menu, Gallery
 from config import app, api, db
 from datetime import datetime
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 import logging
+import cloudinary
+from cloudinary import uploader
+import cloudinary.api
+from dotenv import load_dotenv
+import os
 from functools import wraps
+load_dotenv()
+# Cloudinary configuration
+cloudinary.config(
+    cloud_name=os.getenv('CLOUD_NAME'),
+    api_key=os.getenv('API_KEY'),
+    api_secret=os.getenv('API_SECRET')
+)
+
+if not all([cloudinary.config().cloud_name,cloudinary.config().api_key,cloudinary.config().api_secret]):
+    raise ValueError("No cloudinary configurations found.ensure CLOUD_NAME,API_KEY,SECRET_KEY are set")
 
 def admin_required(fn):
     @wraps(fn)
     @jwt_required()
     def wrapper(*args, **kwargs):
         identity = get_jwt_identity()
-        # Fix: use first() instead of .first()
         user = User.query.filter_by(id=identity['id']).first()
         if not user or not user.is_admin:
             return jsonify({"error": "Admin access required"}), 403
@@ -151,51 +164,101 @@ class Galleries(Resource):
     
     @admin_required
     def post(self):
-        data = request.json
-        if data is None:
-            return jsonify({"error":"Invalid JSON payload "}), 400
-        try:
-            media_type = data['media_type']
-            description = data['description']
+        app.logger.info(f"Form data:{request.form}")
+        app.logger.info(f"Files:{request.files}")
 
-            gallery = Gallery(
-                media_type = media_type,
-                description = description
-            )
-            db.session.add(gallery)
-            db.session.commit()
-            return make_response(jsonify({"message":"Media added successfully"}),201)
-        except IntegrityError:
-            db.session.rollback()
-            return make_response(jsonify({"error":"media already exists"}),400)
-        except Exception as e:
-            return make_response(jsonify({"error":str(e)}),500)
+        file_to_upload = request.files.get("file")
+        description = request.form.get("description")
+        user_id = request.form.get("user_id")
+        media_type = request.form.get("type")
 
-    @admin_required   
-    def patch(self,id):
-        gallery = Gallery.query.filter(Gallery.id==id).first()
-        if not gallery:
-            return make_response(jsonify({"error":"Media type is not found"}),404)
+        app.logger.info(
+            f"Recieved data:description ={description},user_id={user_id}, type={media_type} ")
         
-        data = request.json
-        if not data:
-            return jsonify({"error":"No input data provided"}),400
-        gallery.media_type = data.get('media_type',gallery.media_type)
-        gallery.description = data.get('description',gallery.description)
+        # check for missing fields and log them
+        missing_fields = []
+        if not description:
+            missing_fields.append("description")
+        if not file_to_upload:
+            missing_fields.append("file")
+        if not media_type:
+            missing_fields.append("type")
 
-        db.session.commit()
-        return make_response(jsonify({'message':'meadia updated successfully'}),200)
+        if missing_fields:
+            app.logger.error(f"Missing fields:{missing_fields}")
+            return {'error':f"Missing fields:{','.join(missing_fields)}"}, 400
+        
+        try:
+            if media_type == 'video':
+                upload_result = uploader.upload(
+                    file_to_upload,resource_type='video'
+                )
+            
+            else:
+                upload_result = uploader.upload(file_to_upload)
+
+        except Exception as e:
+            app.logger.error(f"Error uploading to Cloudinary:{e}")
+            return make_response(jsonify({"error": "File upload failed"}), 500)
+
+        app.logger.info(upload_result)
+        file_url = upload_result['url']
+
+        file_url = upload_result.get('url')
+
+        try:
+           new_media = Gallery(
+               media_type=file_url,
+               description=description,
+               user_id = user_id
+           ) 
+
+           db.session.add(new_media)
+           db.session.commit()
+
+        except Exception as e:
+            app.logger.error(f"Error saving content to database:{e}")
+            return make_response(jsonify({"error": "Content creation failed"}), 500)
+
+        return make_response(jsonify({
+            "message": "Content uploaded and created successfully",
+            "new_media": new_media.id,
+            "upload_result": upload_result}), 201)
+   
+api.add_resource(Galleries,'/gallery')
+
+class GalleryId(Resource):
+    def get(self,id):
+        media = Gallery.query.filter(Gallery.id ==id).first()
+        if not media:
+            return make_response(jsonify({"error":"Media not found"}),404)
+        return jsonify(media.to_dict())
     
     @admin_required
-    def delete(self,id):
-        gallery = Gallery.query.filter(Gallery.id==id).first()
+    def patch(self, id):
+        gallery = Gallery.query.filter(Gallery.id == id).first()
         if not gallery:
-            return jsonify({"error":"Media-type not found"}), 404
+            return make_response(jsonify({"error": "Media type is not found"}), 404)
+
+        data = request.json
+        if not data:
+            return jsonify({"error": "No input data provided"}), 400
+        # gallery.media_type = data.get('media_type',gallery.media_type)
+        gallery.description = data.get('description', gallery.description)
+
+        db.session.commit()
+        return make_response(jsonify({'message': 'meadia updated successfully'}), 200)
+
+    @admin_required
+    def delete(self, id):
+        gallery = Gallery.query.filter(Gallery.id == id).first()
+        if not gallery:
+            return jsonify({"error": "Media-type not found"}), 404
         db.session.delete(gallery)
         db.session.commit()
-        return make_response(jsonify({'message':'Media has been deleted successfuly'}),200)
-    
-api.add_resource(Galleries,'/gallery','/gallery/<int:id>')
+        return make_response(jsonify({'message': 'Media has been deleted successfuly'}), 200)
+
+api.add_resource(GalleryId,'/gallery/<int:id>')
 
 class Menus(Resource):
     def get(self):
