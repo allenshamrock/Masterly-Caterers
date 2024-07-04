@@ -9,11 +9,16 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 import logging
 import cloudinary
 from cloudinary import uploader
+from authlib.integrations.flask_client import Oauth
 import cloudinary.api
 from dotenv import load_dotenv
 import os
 from functools import wraps
+
 load_dotenv()
+oauth = Oauth()
+
+
 # Cloudinary configuration
 cloudinary.config(
     cloud_name=os.getenv('CLOUD_NAME'),
@@ -21,8 +26,24 @@ cloudinary.config(
     api_secret=os.getenv('API_SECRET')
 )
 
-if not all([cloudinary.config().cloud_name,cloudinary.config().api_key,cloudinary.config().api_secret]):
-    raise ValueError("No cloudinary configurations found.ensure CLOUD_NAME,API_KEY,SECRET_KEY are set")
+if not all([cloudinary.config().cloud_name, cloudinary.config().api_key, cloudinary.config().api_secret]):
+    raise ValueError(
+        "No cloudinary configurations found.Ensure CLOUD_NAME,API_KEY,SECRET_KEY are set")
+
+google = oauth.register(
+    name = 'google',
+    client_id = os.getenv('GOOGLE_CLIENT_ID'),
+    client_secret = os.getenv('GOOGLE_CLIENT_SECRET'),
+    authorize_url='https://menus.google.com/o/oauth2/auth',
+    authorize_params = None,
+    access_token_url='https://menus.google.com/o/oauth2/token',
+    access_token_params = None,
+    refresh_token_url = None,
+    redirect_uri = os.getenv('GOOGLE_REDIRECT_URI'),
+    client_kwargs = {'scope':'openid email profile'} 
+)
+
+
 
 def admin_required(fn):
     @wraps(fn)
