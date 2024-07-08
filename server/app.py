@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash
 from flask import request, jsonify,make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
-from models import User, Booking, BlogPost, Gallery
+from models import User, Booking, BlogPost, Gallery,Quote
 from config import app, api, db
 from datetime import datetime
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, unset_jwt_cookies
@@ -281,73 +281,77 @@ class GalleryId(Resource):
 
 api.add_resource(GalleryId,'/gallery/<int:id>')
 
-# class Menus(Resource):
-#     def get(self):
-#         menus =[ menu.to_dict() for menu in Menu.query.all()]
-#         return jsonify(menus)
+class Quotes(Resource):
+    def get(self):
+        quotes =[ quote.to_dict() for quote in Quote.query.all()]
+        return jsonify(quotes)
     
-#     def post(self):
-#         data = request.get_json()
-#         if  data is None:
-#             return jsonify({"error": "Invalid JSON payload"}), 404
+    def post(self):
+        data = request.get_json()
+        if  data is None:
+            return jsonify({"error": "Invalid JSON payload"}), 404
         
-#         try:
-#             name = data.get('name')
-#             description = data.get('description')
-#             price = data.get('price')
-#             category = data.get('category')
+        try:
+            name = data.get('name')
+            description = data.get('description')
+            price = data.get('price')
+            phone_number = data.get('phone_number')
+            address = data.get('address')
+            date = data.get('date')
 
-#             menu= Menu(
-#                 name=name,
-#                 description=description,
-#                 price=price,
-#                 category=category
-#             )
-#             db.session.add(menu)
-#             db.session.commit()
+            quote= Quote(
+                name=name,
+                description=description,
+                price=price,
+                phone_number = phone_number,
+                address = address,
+                date=date
+            )
+            db.session.add(quote)
+            db.session.commit()
 
-#             return make_response(jsonify({"message": "Menu created successfully"}), 200)
-#         except IntegrityError:
-#             db.session.rollback()
-#             return make_response(jsonify({"error": "Menu already exists"}), 400)
-#         except Exception as e:
-#             return make_response(jsonify({"error":str(e)}),500)
+            return make_response(jsonify({"message": "Quote created successfully"}), 200)
+        except IntegrityError:
+            db.session.rollback()
+            return make_response(jsonify({"error": "Menu already exists"}), 400)
+        except Exception as e:
+            return make_response(jsonify({"error":str(e)}),500)
 
-# api.add_resource(Menus,'/menus')
+api.add_resource(Quotes,'/quotes')
 
-# class MenuId(Resource):
-#     def get(self,id):
-#         menu = Menu.query.filter(Menu.id==id).first()
-#         if not menu:
-#             return jsonify({"error":"Menu not found"}), 404
+class QuotesId(Resource):
+    def get(self,id):
+        quote = Quote.query.filter(Quote.id==id).first()
+        if not quote:
+            return jsonify({"error":"Quote not found"}), 404
 
-#         return jsonify(menu.to_dict())
+        return jsonify(quote.to_dict())
     
-#     def patch(self,id):
-#         menu = Menu.query.filter(Menu.id==id).first()
-#         if not menu:
-#             return jsonify({"error":"Menu not found"}),404
+    def patch(self,id):
+        quote = Quote.query.filter(Quote.id==id).first()
+        if not quote:
+            return jsonify({"error":"Quote not found"}),404
         
-#         data = request.json
-#         if data is None:
-#             return make_response(jsonify({"error": "No data input provided"}), 400)
-#         menu.name = data.get('name',menu.name)
-#         menu.description = data.get('description',menu.description)
-#         menu.category = data.get('category',menu.category)
+        data = request.json
+        if data is None:
+            return make_response(jsonify({"error": "No data input provided"}), 400)
+        quote.name = data.get('name',quote.name)
+        quote.description = data.get('description',quote.description)
+        quote.category = data.get('category',quote.category)
 
-#         db.session.commit()
-#         return make_response(jsonify({"message": "Menu successfully updated"}), 200)
+        db.session.commit()
+        return make_response(jsonify({"message": "Menu successfully updated"}), 200)
     
-#     def delete(self,id):
-#         menu = Menu.query.filter(Menu.id==id).first()
-#         if not menu:
-#             return make_response(jsonify({"error": "Menu not found"}), 404)
+    def delete(self,id):
+        quote = Quote.query.filter(Quote.id==id).first()
+        if not quote:
+            return make_response(jsonify({"error": "Quote not found"}), 404)
         
-#         db.session.delete(menu)
-#         db.session.commit()
-#         return make_response(jsonify({"message": "Menu successfully deleted"}), 200)
+        db.session.delete(quote)
+        db.session.commit()
+        return make_response(jsonify({"message": "Quote successfully deleted"}), 200)
 
-# api.add_resource(MenuId,'/menus/<int:id>')
+api.add_resource(QuotesId,'/quotes/<int:id>')
 
 class Bookings(Resource):
     def get(self):
@@ -511,6 +515,83 @@ class BlogPostId(Resource):
         return jsonify({"message":"Blog delted successfully"}), 200
     
 api.add_resource(BlogPostId, '/blogs/<int:id>')
+
+class Promotion(Resource):
+    def get(self):
+        promotions = [promotion.to_dict() for promotion in Promotion.query.all()]
+        return jsonify(promotions)
+    
+    def post(self):
+        data = request.get_json()
+
+        if data is None:
+            return make_response(jsonify("Invalid JSON payload"),400)
+        try:
+            offer_name = data['offer_name'],
+            description = data['description'],
+            start_date = datetime.strptime(data['start_date'], '%Y-%m-%d').date(),
+            end_date = datetime.strptime(data['end_date'], '%Y-%m-%d').date(),
+            season_holiday = data['season_holiday'],
+            discount = data.get('discount'),
+            conditions = data.get('conditions')
+
+            promotion = Promotion(
+                offer_name = offer_name,
+                description=description,
+                start_date=start_date,
+                end_date=end_date,
+                season_holiday=season_holiday,
+                discount=discount,
+                conditions=conditions
+            )
+
+            db.session.add(promotion)
+            db.session.commit()
+            return make_response(jsonify({"message": "Promotion created successfully"}),200)
+        
+        except IntegrityError:
+            db.session.rollback()
+            return make_response(jsonify({"error":"Promotion already exists"}),400)
+        
+        except Exception as e:
+            return make_response(jsonify({"error":str(e)}),500)
+api.add_resource(Promotion,'/promotions')
+
+class PromotionId(Resource):
+    def get(self,id):
+        promotion = Promotion.query.filter(Promotion.id==id).first()
+        if not promotion:
+            return jsonify({"error":"Promotion not found"}),404
+        return jsonify(promotion.to_dict())
+    
+    def patch(self,id):
+        promotion = Promotion.query.filter(Promotion.id==id).first()
+        if not promotion:
+            return jsonify({"error":"Promotion not found"}), 404
+        
+        data = request.json
+        if data is None:
+            return jsonify({"message":"INvalid JSON payload"}),400
+        promotion.offfer_name = data.get('offer_name',promotion.offer_name)
+        promotion.description = data.get('description',promotion.description)
+        promotion.start_date = data.get('start_date',promotion.start_date)
+        promotion.end_date = data.get('end_date',promotion.end_date)
+        promotion.season_holiday = data.get('season_holiday',promotion.season_holiday)
+        promotion.discount = data.get('discount',promotion.discount)
+        promotion.conditions =data.get('conditions',promotion.conditions)
+
+        db.session.commit()
+        return jsonify({"message":"Prommotion updated successfully"})
+    
+    def delete(self,id):
+        promotion = Promotion.query.filter_by(id=id).first()
+        if not promotion:
+            return jsonify({"message":"Promotion not found"}), 404
+        db.session.delete(promotion)
+        db.session.commit()
+        return make_response(jsonify({"message":"Promoton deleted successfully"}))
+    
+api.add_resource(PromotionId,'/promotions/<int:id>')
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
