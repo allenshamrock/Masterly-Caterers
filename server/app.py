@@ -2,21 +2,21 @@ from werkzeug.security import generate_password_hash
 from flask import request, jsonify,make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
-from models import User, Booking, BlogPost, Menu, Gallery
+from models import User, Booking, BlogPost, Gallery
 from config import app, api, db
 from datetime import datetime
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 import logging
 import cloudinary
 from cloudinary import uploader
-from authlib.integrations.flask_client import Oauth
+# from authlib.integrations.flask_client import Oauth
 import cloudinary.api
 from dotenv import load_dotenv
 import os
 from functools import wraps
 
 load_dotenv()
-oauth = Oauth()
+# oauth = Oauth()
 
 
 # Cloudinary configuration
@@ -30,18 +30,18 @@ if not all([cloudinary.config().cloud_name, cloudinary.config().api_key, cloudin
     raise ValueError(
         "No cloudinary configurations found.Ensure CLOUD_NAME,API_KEY,SECRET_KEY are set")
 
-google = oauth.register(
-    name = 'google',
-    client_id = os.getenv('GOOGLE_CLIENT_ID'),
-    client_secret = os.getenv('GOOGLE_CLIENT_SECRET'),
-    authorize_url='https://menus.google.com/o/oauth2/auth',
-    authorize_params = None,
-    access_token_url='https://menus.google.com/o/oauth2/token',
-    access_token_params = None,
-    refresh_token_url = None,
-    redirect_uri = os.getenv('GOOGLE_REDIRECT_URI'),
-    client_kwargs = {'scope':'openid email profile'} 
-)
+# google = oauth.register(
+#     name = 'google',
+#     client_id = os.getenv('GOOGLE_CLIENT_ID'),
+#     client_secret = os.getenv('GOOGLE_CLIENT_SECRET'),
+#     authorize_url='https://menus.google.com/o/oauth2/auth',
+#     authorize_params = None,
+#     access_token_url='https://menus.google.com/o/oauth2/token',
+#     access_token_params = None,
+#     refresh_token_url = None,
+#     redirect_uri = os.getenv('GOOGLE_REDIRECT_URI'),
+#     client_kwargs = {'scope':'openid email profile'} 
+# )
 
 
 
@@ -281,73 +281,73 @@ class GalleryId(Resource):
 
 api.add_resource(GalleryId,'/gallery/<int:id>')
 
-class Menus(Resource):
-    def get(self):
-        menus =[ menu.to_dict() for menu in Menu.query.all()]
-        return jsonify(menus)
+# class Menus(Resource):
+#     def get(self):
+#         menus =[ menu.to_dict() for menu in Menu.query.all()]
+#         return jsonify(menus)
     
-    def post(self):
-        data = request.get_json()
-        if  data is None:
-            return jsonify({"error": "Invalid JSON payload"}), 404
+#     def post(self):
+#         data = request.get_json()
+#         if  data is None:
+#             return jsonify({"error": "Invalid JSON payload"}), 404
         
-        try:
-            name = data.get('name')
-            description = data.get('description')
-            price = data.get('price')
-            category = data.get('category')
+#         try:
+#             name = data.get('name')
+#             description = data.get('description')
+#             price = data.get('price')
+#             category = data.get('category')
 
-            menu= Menu(
-                name=name,
-                description=description,
-                price=price,
-                category=category
-            )
-            db.session.add(menu)
-            db.session.commit()
+#             menu= Menu(
+#                 name=name,
+#                 description=description,
+#                 price=price,
+#                 category=category
+#             )
+#             db.session.add(menu)
+#             db.session.commit()
 
-            return make_response(jsonify({"message": "Menu created successfully"}), 200)
-        except IntegrityError:
-            db.session.rollback()
-            return make_response(jsonify({"error": "Menu already exists"}), 400)
-        except Exception as e:
-            return make_response(jsonify({"error":str(e)}),500)
+#             return make_response(jsonify({"message": "Menu created successfully"}), 200)
+#         except IntegrityError:
+#             db.session.rollback()
+#             return make_response(jsonify({"error": "Menu already exists"}), 400)
+#         except Exception as e:
+#             return make_response(jsonify({"error":str(e)}),500)
 
-api.add_resource(Menus,'/menus')
+# api.add_resource(Menus,'/menus')
 
-class MenuId(Resource):
-    def get(self,id):
-        menu = Menu.query.filter(Menu.id==id).first()
-        if not menu:
-            return jsonify({"error":"Menu not found"}), 404
+# class MenuId(Resource):
+#     def get(self,id):
+#         menu = Menu.query.filter(Menu.id==id).first()
+#         if not menu:
+#             return jsonify({"error":"Menu not found"}), 404
 
-        return jsonify(menu.to_dict())
+#         return jsonify(menu.to_dict())
     
-    def patch(self,id):
-        menu = Menu.query.filter(Menu.id==id).first()
-        if not menu:
-            return jsonify({"error":"Menu not found"}),404
+#     def patch(self,id):
+#         menu = Menu.query.filter(Menu.id==id).first()
+#         if not menu:
+#             return jsonify({"error":"Menu not found"}),404
         
-        data = request.json
-        if data is None:
-            return make_response(jsonify({"error": "No data input provided"}), 400)
-        menu.name = data.get('name',menu.name)
-        menu.description = data.get('description',menu.description)
-        menu.category = data.get('category',menu.category)
+#         data = request.json
+#         if data is None:
+#             return make_response(jsonify({"error": "No data input provided"}), 400)
+#         menu.name = data.get('name',menu.name)
+#         menu.description = data.get('description',menu.description)
+#         menu.category = data.get('category',menu.category)
 
-        db.session.commit()
-        return make_response(jsonify({"message": "Menu successfully updated"}), 200)
+#         db.session.commit()
+#         return make_response(jsonify({"message": "Menu successfully updated"}), 200)
     
-    def delete(self,id):
-        menu = Menu.query.filter(Menu.id==id).first()
-        if not menu:
-            return make_response(jsonify({"error": "Menu not found"}), 404)
+#     def delete(self,id):
+#         menu = Menu.query.filter(Menu.id==id).first()
+#         if not menu:
+#             return make_response(jsonify({"error": "Menu not found"}), 404)
         
-        db.session.delete(menu)
-        db.session.commit()
-        return make_response(jsonify({"message": "Menu successfully deleted"}), 200)
+#         db.session.delete(menu)
+#         db.session.commit()
+#         return make_response(jsonify({"message": "Menu successfully deleted"}), 200)
 
-api.add_resource(MenuId,'/menus/<int:id>')
+# api.add_resource(MenuId,'/menus/<int:id>')
 
 class Bookings(Resource):
     def get(self):

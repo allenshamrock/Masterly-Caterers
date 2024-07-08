@@ -19,22 +19,14 @@ class User(db.Model, SerializerMixin):
         'BlogPost', back_populates='user', cascade='all, delete-orphan')
     bookings = db.relationship(
         'Booking', back_populates='user', cascade='all, delete-orphan')
-    menus = association_proxy(
-        'bookings', 'menu', creator=lambda menu_obj: Booking(menu=menu_obj))
+    quotes = association_proxy(
+        'bookings', 'quote', creator=lambda quote_obj: Booking(quote=quote_obj))
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
-    # def to_dict(self):
-    #     return {
-    #         "id":self.id,
-    #         "username":self.username,
-    #         "email":self.email,
-    #         "is_admin":self.is_admin
-    #     }
 
     @classmethod
     def create_user(cls, username, email, password, is_admin=False):
@@ -75,30 +67,57 @@ class BlogPost(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='blogposts')
 
 
-class Menu(db.Model, SerializerMixin):
-    __tablename__ = 'menus'
+class Quote(db.Model, SerializerMixin):
+    __tablename__ = 'quotes'
     serialize_only = ('id', 'name', 'description', 'price', 'category')
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String, nullable=False)
+    date = db.Column(db.DateTime,nullable=False)
+    phone_number = db.Column(db.String, nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)
-    category = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(100), nullable=False)
     bookings = db.relationship(
-        'Booking', back_populates='menu', cascade='all, delete-orphan')
+        'Booking', back_populates='quotes', cascade='all, delete-orphan')
+    promotions = db.relationship(
+        'Promotion', back_populates='quote', cascade='all, delete-orphan')
+
+
+class Promotion(db.Model):
+    __tablename__ = 'promotions'
+    id = db.Column(db.Integer, primary_key=True)
+    offer_name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    season_holiday = db.Column(db.String, nullable=False)
+    discount = db.Column(db.Float, nullable=False)
+    conditions = db.Column(db.String, nullable=False)
+    quote_id = db.Column(db.Integer, db.ForeignKey('quotes.id'))
+    quote = db.relationship('Quote', back_populates='promotions')
+
+    bookings = db.relationship('Booking', back_populates='promotion')
 
 
 class Booking(db.Model, SerializerMixin):
     __tablename__ = 'bookings'
     serialize_only = ('id', 'user_id', 'event_date', 'event_type',
-                      'guest_count', 'menu_id', 'special_requests', 'booking_date')
+                      'guest_count', 'quote_id', 'promotion_id', 'special_requests', 'booking_date')
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     event_date = db.Column(db.DateTime, nullable=False)
     event_type = db.Column(db.String(100), nullable=False)
     guest_count = db.Column(db.Integer, nullable=False)
-    menu_id = db.Column(db.Integer, db.ForeignKey('menus.id'), nullable=False)
-    special_requests = db.Column(db.Text, nullable=False)
+    quote_id = db.Column(db.Integer, db.ForeignKey(
+        'quotes.id'), nullable=False)
+    promotion_id = db.Column(db.Integer, db.ForeignKey(
+        'promotions.id'), nullable=True)
+    special_requests = db.Column(db.Text, nullable=True)
     booking_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     user = db.relationship('User', back_populates='bookings')
-    menu = db.relationship('Menu', back_populates='bookings')
+    quote = db.relationship('Quote', back_populates='bookings')
+    promotion = db.relationship('Promotion', back_populates='bookings')
+
+    # Add this property to match the 'quotes' relationship in Quote
+    quotes = db.relationship('Quote', back_populates='bookings')
