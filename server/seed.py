@@ -13,12 +13,12 @@ with app.app_context():
 
     print("Adding users..")
     users = [
-        User(username='Allen Shamrock', email='allenshamrock37@gmail.com',
-             password_hash='Allen@123', is_admin=True),
+        User(username='Allen Shamrock', email='allenshamrock37@masterly.com',
+             password_hash='Allen@123'),
         User(username='Naran Jackson', email='naran37@gmail.com',
-             password_hash='Naran@123', is_admin=False),
+             password_hash='Naran@123',),
         User(username='Tracy Tamara', email='trcy@gmail.com',
-             password_hash='Tracy@123', is_admin=False)
+             password_hash='Tracy@123', )
     ]
 
     for user in users:

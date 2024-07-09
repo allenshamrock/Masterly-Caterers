@@ -24,7 +24,7 @@ const baseQueryWithReAuth = async (args, api, extraOptions) => {
     const refreshResult = await baseQuery(
       {
         url: "refresh-token",
-        method: POST,
+        method: "POST",
         body: { refreshToken },
       },
       api,
@@ -54,8 +54,8 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: "/login",
-        method: POST,
+        url: '/login',
+        method: 'POST',
         body: credentials,
       }),
     }),

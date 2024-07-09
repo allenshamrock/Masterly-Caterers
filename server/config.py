@@ -14,6 +14,7 @@ app=Flask(__name__)
 app.config['SECRET_KEY'] = '950f0f263d20fbb04b8a4b29a42c1377655a877c70df2ef1690d166bd5ff5198' 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///masterly.db'
 app.config['JWT_SECRET_KEY'] = 'f72c13cb465603659a3a537c55b4fd32946b66d6a4f3fa600121a9bdc79e9415'
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 600
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
@@ -24,5 +25,5 @@ db =SQLAlchemy(metadata=metadata)
 migrate = Migrate(app,db)
 db.init_app(app)
 api = Api(app)
-CORS(app)
+CORS(app, supports_credentials=True)
 jwt=JWTManager(app)

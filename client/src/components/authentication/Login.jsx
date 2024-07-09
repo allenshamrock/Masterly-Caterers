@@ -4,13 +4,18 @@ import * as yup from 'yup';
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useToast } from '@chakra-ui/react';
 import { Spinner } from '@chakra-ui/spinner';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../../features/auth/Authslice';
+import { useLoginMutation } from '../../features/auth/Authapi';
+import { toast } from "react-toastify";
 
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+  const [login, {isLoading}] = useLoginMutation()
+  
 
   const initialValues = {
     email: "",
@@ -28,12 +33,11 @@ const Login = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      setIsLoading(true);
       const response = await login({
         email: values.email,
         password: values.password,
       });
-      const { access_token, username, role, content } = response.data;
+      const { access_token, username, role, content} = response.data
       localStorage.setItem('access', access_token);
       localStorage.setItem('username', username);
       dispatch(setCredentials({ accessToken: access_token, username: username, role: role, user: content }));
@@ -43,7 +47,6 @@ const Login = () => {
         status: "info",
         isClosable: true,
       });
-      // navigate(from, { replace: true });
     } catch (error) {
       console.log(error);
       toast({
@@ -54,7 +57,6 @@ const Login = () => {
         isClosable: true,
       });
     } finally {
-      setIsLoading(false);
       setSubmitting(false);
     }
   };

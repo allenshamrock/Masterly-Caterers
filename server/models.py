@@ -3,15 +3,17 @@ from config import db
 from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.orm import validates
 
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
-    serialize_only = ('id', 'username', 'email', 'is_admin')
+    serialize_only = ('id', 'username', 'email', 'role')
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), nullable=False, unique=True)
-    email = db.Column(db.String, nullable=True, unique=True)
-    is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    email = db.Column(db.String, nullable=False, unique=True)
+    # is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    role = db.Column(db.String,nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
     galleries = db.relationship(
         'Gallery', back_populates='user', cascade='all, delete-orphan')
@@ -27,20 +29,36 @@ class User(db.Model, SerializerMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    @validates('email')
+    def validate_email(self,key,email):
+        if not email:
+            raise ValueError("Email field cannot be blank ")
+        
+        existing_email = User.query.filter(User.email==email).first()
+        if existing_email:
+            raise ValueError('Email already exists')
+        
+        if email.endswith('@masterly.com'):
+            self.role = "admin"
+        else:
+            self.role = "user"
+    
+        return email
 
-    @classmethod
-    def create_user(cls, username, email, password, is_admin=False):
-        if is_admin and cls.query.filter_by(is_admin=True).first():
-            raise ValueError('An admin already exists')
-        user = cls(
-            username=username,
-            email=email,
-            is_admin=is_admin
-        )
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        return user
+    # @classmethod
+    # def create_user(cls, username, email, password, is_admin=False):
+    #     if is_admin and cls.query.filter_by(is_admin=True).first():
+    #         raise ValueError('An admin already exists')
+    #     user = cls(
+    #         username=username,
+    #         email=email,
+    #         is_admin=is_admin
+    #     )
+    #     user.set_password(password)
+    #     db.session.add(user)
+    #     db.session.commit()
+    #     return user
 
 
 class Gallery(db.Model, SerializerMixin):

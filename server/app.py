@@ -151,15 +151,15 @@ class Login(Resource):
                 user.is_admin = True
                 db.session.commit()
 
-            access_token = create_access_token( identity={"email": user.email, "id": user.id})
-            refresh_token = create_refresh_token( identity={"email": user.email, "id": user.id})
+            access_token = create_access_token( identity={"email": user.email, "role":user.role, "id": user.id})
+            refresh_token = create_refresh_token(identity={"email": user.email, "role": user.role, "id": user.id})
 
             response = {
                 "access_token": access_token,
                 'id': user.id,
                 'content': user.to_dict(),
                 'username': user.username,
-                'is_admin': user.is_admin,
+                'role': user.role,
                 'refresh_token': refresh_token
             }
                 
