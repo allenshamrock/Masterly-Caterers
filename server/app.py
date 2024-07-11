@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from flask import request, jsonify,make_response
+from flask import request, jsonify,make_response,session,url_for,redirect
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from models import User, Booking, BlogPost, Gallery,Quote
@@ -9,14 +9,14 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 import logging
 import cloudinary
 from cloudinary import uploader
-# from authlib.integrations.flask_client import Oauth
+from authlib.integrations.flask_client import OAuth
 import cloudinary.api
 from dotenv import load_dotenv
 import os
 from functools import wraps
 
 load_dotenv()
-# oauth = Oauth()
+oauth = OAuth(app)
 
 
 # Cloudinary configuration
@@ -30,18 +30,18 @@ if not all([cloudinary.config().cloud_name, cloudinary.config().api_key, cloudin
     raise ValueError(
         "No cloudinary configurations found.Ensure CLOUD_NAME,API_KEY,SECRET_KEY are set")
 
-# google = oauth.register(
-#     name = 'google',
-#     client_id = os.getenv('GOOGLE_CLIENT_ID'),
-#     client_secret = os.getenv('GOOGLE_CLIENT_SECRET'),
-#     authorize_url='https://menus.google.com/o/oauth2/auth',
-#     authorize_params = None,
-#     access_token_url='https://menus.google.com/o/oauth2/token',
-#     access_token_params = None,
-#     refresh_token_url = None,
-#     redirect_uri = os.getenv('GOOGLE_REDIRECT_URI'),
-#     client_kwargs = {'scope':'openid email profile'} 
-# )
+google = oauth.register(
+    name = 'google',
+    client_id = os.getenv('GOOGLE_CLIENT_ID'),
+    client_secret = os.getenv('GOOGLE_CLIENT_SECRET'),
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params = None,
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params = None,
+    refresh_token_url = None,
+    # redirect_uri = os.getenv('GOOGLE_REDIRECT_URI'),
+    client_kwargs = {'scope':'openid email profile'} 
+)
 
 
 
@@ -55,8 +55,6 @@ def admin_required(fn):
             return jsonify({"error": "Admin access required"}), 403
         return fn(*args, **kwargs)
     return wrapper
-
-
 
 class Users(Resource):
     def get(self):
@@ -128,6 +126,75 @@ class UserId(Resource):
     
 api.add_resource(UserId,'/users/<int:id>')
 
+class GoogleLogin(Resource):
+    @staticmethod
+    def authorized():
+        if request.method == 'GET':
+            token = google.authorize_access_token()
+            user_info = google.parse_id_token(token)
+            if user_info is None:
+                return {'message': 'Failed to retrieve user info from Google'}, 400
+
+            email = user_info.get('email')
+            username = user_info.get('name')
+
+            # Check if the user exists in the database
+            user = User.query.filter_by(email=email).first()
+            if not user:
+                # If the user doesn't exist, register the user using Google info
+                user = User(username=username, email=email)
+                db.session.add(user)
+                db.session.commit()
+
+            # Generate JWT tokens for the user
+            access_token = create_access_token(
+                identity={"email": user.email, "role": user.role, "id": user.id})
+            refresh_token = create_refresh_token(
+                identity={"email": user.email, "role": user.role, "id": user.id})
+
+            # Return the tokens and user info in the response
+            return jsonify({
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+                'user': user.to_dict()  # Assuming to_dict() method returns user info as a dictionary
+            })
+
+    def post(self):
+        access_token = request.json.get('access_token')
+        nonce = request.json.get('nonce')  # Retrieve nonce from the request
+        if access_token:
+            # Retrieve the nonce value stored in session or elsewhere
+            stored_nonce = session.get('nonce')
+
+            if stored_nonce == nonce:  # Compare nonce from request with stored nonce
+                user_info = google.parse_id_token(access_token, nonce=nonce)
+                if user_info is None:
+                    return {'message': 'Invalid or expired access token'}, 400
+
+                email = user_info.get('email')
+                username = user_info.get('name')
+                user = User.query.filter_by(email=email).first()
+                if user:
+                    access_token = create_access_token(
+                        identity={"email": user.email, "role": user.role, "id": user.id})
+                    refresh_token = create_refresh_token(
+                        identity={"email": user.email, "role": user.role, "id": user.id})
+                    return jsonify({
+                        'access_token': access_token,
+                        'id': user.id,
+                        'content': user.to_dict(),
+                        'username': user.username,
+                        'role': user.role,
+                        'refresh_token': refresh_token
+                    }), 200
+                else:
+                    return {'message': 'User not found'}, 404
+            else:
+                return {'message': 'Nonce mismatch'}, 400
+        else:
+            return {'message': 'Access token not provided'}, 400
+        
+api.add_resource(GoogleLogin, '/login/authorized')
 
 class Login(Resource):
     def post(self):

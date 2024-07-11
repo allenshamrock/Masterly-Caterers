@@ -46,19 +46,13 @@ class User(db.Model, SerializerMixin):
     
         return email
 
-    # @classmethod
-    # def create_user(cls, username, email, password, is_admin=False):
-    #     if is_admin and cls.query.filter_by(is_admin=True).first():
-    #         raise ValueError('An admin already exists')
-    #     user = cls(
-    #         username=username,
-    #         email=email,
-    #         is_admin=is_admin
-    #     )
-    #     user.set_password(password)
-    #     db.session.add(user)
-    #     db.session.commit()
-    #     return user
+    def to_dict(self):
+        return{
+            'id':self.id,
+            'username':self.username,
+            'role':self.role,
+            'email':self.email
+        }
 
 
 class Gallery(db.Model, SerializerMixin):

@@ -1,99 +1,97 @@
-import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as yup from 'yup';
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useToast } from '@chakra-ui/react';
-import { Spinner } from '@chakra-ui/spinner';
-import { useDispatch } from 'react-redux';
-import { setCredentials } from '../../features/auth/Authslice';
-import { useLoginMutation } from '../../features/auth/Authapi';
+import React from "react";
+import { GoogleOAuthProvider, useGoogleLogin } from "@react-oauth/google";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../features/auth/Authslice";
 import { toast } from "react-toastify";
+import { Text } from "@chakra-ui/react";
+import axios from "axios";
+import { FcGoogle } from "react-icons/fc";
+import { v4 as uuidv4 } from "uuid";
 
-
-const Login = () => {
-  const toast = useToast();
+const LoginGoogle = () => {
   const dispatch = useDispatch();
-  const [showPassword, setShowPassword] = useState(false);
-  const [login, {isLoading}] = useLoginMutation()
-  
 
-  const initialValues = {
-    email: "",
-    password: ""
-  };
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      console.log("Login successful", response);
+      const nonce = uuidv4(); // Generate a unique nonce
+      const { access_token } = response; // Ensure you are using the correct field
 
-  const loginSchema = yup.object().shape({
-    email: yup.string().required('This field is required').email('Please enter a valid email address'),
-    password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters')
+      if (!access_token) {
+        console.error("Access token is missing from the response.");
+        toast({
+          title: "Access token is missing from the response.",
+          position: "top-center",
+          status: "error",
+          isClosable: true,
+        });
+        return;
+      }
+
+      console.log("Access token:", access_token); // Log the access token
+
+      try {
+        const res = await axios.post("http://127.0.0.1:5555/login/authorized", {
+          token: access_token,
+          nonce: nonce, // Include the nonce in the request
+        });
+
+        const { data } = res;
+        const { access_token: backendAccessToken, refresh_token, user } = data;
+
+        localStorage.setItem("access", backendAccessToken);
+        localStorage.setItem("refresh", refresh_token);
+
+        dispatch(setCredentials({ accessToken: backendAccessToken, user }));
+        toast({
+          title: `Welcome ${user.username}`,
+          position: "top-center",
+          status: "success",
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error(
+          "Error from server:",
+          error.response ? error.response.data : error.message
+        );
+        toast({
+          title: `An error occurred: ${
+            error.response ? error.response.data.message : error.message
+          }`,
+          position: "top-center",
+          status: "error",
+          isClosable: true,
+        });
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: `An error occurred: ${error}`,
+        position: "top-center",
+        status: "error",
+        isClosable: true,
+      });
+      console.log("Login failed", error);
+    },
   });
 
-  const handleToggle = () => {
-    setShowPassword((prev) => !prev);
-  };
-
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      const response = await login({
-        email: values.email,
-        password: values.password,
-      });
-      const { access_token, username, role, content} = response.data
-      localStorage.setItem('access', access_token);
-      localStorage.setItem('username', username);
-      dispatch(setCredentials({ accessToken: access_token, username: username, role: role, user: content }));
-      toast({
-        title: `Welcome back ${username}`,
-        position: "top-center",
-        status: "info",
-        isClosable: true,
-      });
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: "Login failed",
-        description: error.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={loginSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ isSubmitting }) => (
-        <Form>
-          <h1 className='text-center text-3xl font-bold'>Login to Masterly Caterers</h1>
-          <div className='relative block mt-6 p-4 w-full'>
-            <label className='absolute -top-2'>Email<span className='text-gold-600'>*</span></label>
-            <Field type="email" name="email" placeholder="Email" className="w-96 p-2 text-black rounded-md border-gray-700 border" />
-            <ErrorMessage name="email" component="div" className="text-red-600" />
-          </div>
-
-          <div className='relative block mt-6 p-4 w-full'>
-            <label className='absolute -top-2 left-2'>Password <span className='text-gold-600'>*</span></label>
-            <Field type={showPassword ? "text" : "password"} className='w-96 reative text-black rounded-md p-2 border-gray-700 border' name='password' placeholder='Password' />
-            <ErrorMessage name="password" component="div" className="text-red-600" />
-            <button className='absolute right-5 top-5' type="button" onClick={handleToggle}>
-              {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-            </button>
-          </div>
-
-          <div className="block w-full mt-4 relative p-4">
-            <button className="bg-rose-600 py-3 w-96 text-center text-white rounded-md" type="submit" disabled={isSubmitting || isLoading}>
-              {isLoading ? <Spinner /> : 'Login'}
-            </button>
-          </div>
-        </Form>
-      )}
-    </Formik>
+    <div className="block w-full mt-4 relative p-4">
+      <button
+        onClick={() => googleLogin()}
+        className="py-3 flex justify-center w-96 text-center text-stone-900 border border-gray-700 rounded-md gap-2"
+      >
+        <FcGoogle fontSize={"1.3rem"} />
+        <Text className="text-white">Sign in with Google</Text>
+      </button>
+    </div>
   );
 };
 
-export default Login;
+const GoogleAuthProviderWrapper = () => (
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <LoginGoogle />
+  </GoogleOAuthProvider>
+);
+
+export default GoogleAuthProviderWrapper;
