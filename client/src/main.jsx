@@ -6,12 +6,15 @@ import {store} from './features/store.jsx'
 import { Provider } from 'react-redux'
 import "react-toastify/dist/ReactToastify.css";
 import { ChakraProvider } from '@chakra-ui/react'
+import {BrowserRouter} from 'react-router-dom'
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <ChakraProvider>
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ChakraProvider>
     </Provider>
   </React.StrictMode>
