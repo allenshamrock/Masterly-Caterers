@@ -63,7 +63,7 @@ const LoginGoogle = () => {
     <div className="block w-full mt-4 relative p-4">
       <button
         onClick={() => googleLogin()}
-        className="py-3 flex justify-center w-96 text-center text-stone-900 border border-gray-700 rounded-md gap-2"
+        className="py-3 flex justify-center w-96 text-center  text-stone-900 border border-gray-700 rounded-md gap-2"
       >
         <FcGoogle fontSize={"1.3rem"} />
         <Text className="text-white">Sign in with Google</Text>
