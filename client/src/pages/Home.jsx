@@ -34,29 +34,34 @@ const Home = () => {
       image: "/about2.jpeg",
       text: "About Me",
       header: "About",
+      link: "/about",
     },
     {
       image: "/recipe.jpeg",
       text: "Get inspired",
       header: "Recipes",
+      link: "/recipes",
     },
     {
       image: "/gallery.jpeg",
       text: "Gallery",
       header: "Gallery & Media",
+      link: "/gallery",
     },
     {
       image: "/blog.jpeg",
       text: "Blogs",
       header: "Books",
+      link: "/books",
     },
     {
-      image: "/fries.jpeg",
+      image: "/budget.jpeg",
       text: "Quote",
       header: "Budget",
+      link: "/budget",
     },
     {
-      image: "/shrimp.jpeg",
+      image: "/profile.jpeg",
       header: "Follow Me",
       socials: [
         { instagram: "instagram", linkedin: "linkedin", facebook: "facebook" },
@@ -99,7 +104,7 @@ const Home = () => {
           ))}
         </Swiper>
       </div>
-      <div className="relative flex flex-col md:grid md:grid-cols-3 gap-0 mx-3 my-3">
+      <div className="relative flex flex-col md:grid md:grid-cols-3 gap-0 mx-3 ">
         {profiles.map((profile, index) => (
           <div key={index} className="relative group">
             <img
@@ -107,54 +112,64 @@ const Home = () => {
               alt={profile.text}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold opacity-100 transition-opacity duration-300 group-hover:opacity-0">
-              <Text>{profile.header}</Text>
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {profile.socials ? (
+            {profile.link ? (
+              <Link to={profile.link}>
+                <div className="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold opacity-100 transition-opacity duration-300 group-hover:opacity-0">
+                  <Text>{profile.header}</Text>
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button className="rounded-md bg-gold p-1 w-[100px]">
+                    <Text className="text-black text-sm font-bold">
+                      {profile.text}
+                    </Text>
+                  </button>
+                </div>
+              </Link>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex gap-4">
                   {profile.socials[0].instagram && (
                     <button className="rounded-md  bg-gold p-1 w-[100px] no-underline">
-                      <Link
-                        href={`https://instagram.com/${profile.socials[0].instagram}`}
+                      <a
+                        href={`https://www.instagram.com/naranjackson/${profile.socials[0].instagram}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <Text className="text-black text-sm font-bold">
                           Instagram
                         </Text>
-                      </Link>
+                      </a>
                     </button>
                   )}
                   {profile.socials[0].linkedin && (
                     <button className="rounded-md  bg-gold p-1 w-[100px] no-underline">
-                      <Link
-                        href={`https://linkedin.com/in/${profile.socials[0].linkedin}`}
+                      <a
+                        href={`https://www.linkedin.com/feed/${profile.socials[0].linkedin}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <Text className="text-black text-sm font-bold">
                           LinkedIn
                         </Text>
-                      </Link>
+                      </a>
                     </button>
                   )}
                   {profile.socials[0].facebook && (
                     <button className="rounded-md bg-gold p-1 w-[100px]">
-                      <Link
-                        href={`https://facebook.com/${profile.socials[0].facebook}`}
+                      <a
+                        href={`https://www.facebook.com/naran.jackson${profile.socials[0].facebook}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         <Text className="text-black text-sm font-bold">
                           Facebook
                         </Text>
-                      </Link>
+                      </a>
                     </button>
                   )}
                 </div>
-              ) : (
-                <button className="rounded-md bg-gold p-1 w-[100px]">
-                  <Text className="text-black text-sm font-bold">
-                    {profile.text}
-                  </Text>
-                </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
