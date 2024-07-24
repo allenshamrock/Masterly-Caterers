@@ -1,14 +1,21 @@
 import { Card, CardBody, Heading, Image, Stack, Text } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function Recipes() {
   const [data, setData] = useState([]);
   useEffect(() => {
     const getData = async () => {
-      const response = await fetch("http://localhost:3001/recipesInfo");
-      const data = await response.json();
-      setData(data);
-      console.log(data);
+      try {
+        const response = await fetch("http://localhost:3000/recipesInfo");
+        if (!response.ok)
+          throw new Error(`Https Error  ! status:${response.status}`);
+        const data = await response.json();
+        setData(data);
+        console.log(data);
+      } catch (error) {
+        console.error(error.message);
+      }
     };
     getData();
   }, []);
@@ -35,7 +42,10 @@ function Recipes() {
       <div className="flex flex-col items-center mt-2 ">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.map((recipe, index) => (
-            <Card key={index} maxW="sm" className="mx-auto">
+            <Card key={index} maxW="sm" className="mx-auto"
+            as={Link}
+            to={`/recipes/${recipe.id}`}
+            >
               <CardBody>
                 <Image
                   src={recipe.img_url}
@@ -45,6 +55,7 @@ function Recipes() {
                 />
                 <Stack mt="6" spacing="3">
                   <Heading size="md">{recipe.name}</Heading>
+                  <Text>{recipe.description} </Text>
                 </Stack>
               </CardBody>
             </Card>
