@@ -104,74 +104,76 @@ const Home = () => {
           ))}
         </Swiper>
       </div>
-      <div className="relative flex flex-col md:grid md:grid-cols-3 gap-0 mx-3 ">
-        {profiles.map((profile, index) => (
-          <div key={index} className="relative group">
-            <img
-              src={profile.image}
-              alt={profile.text}
-              className="w-full h-full object-cover"
-            />
-            {profile.link ? (
-              <Link to={profile.link}>
-                <div className="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold opacity-100 transition-opacity duration-300 group-hover:opacity-0">
-                  <Text>{profile.header}</Text>
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <button className="rounded-md bg-gold p-1 w-[100px]">
-                    <Text className="text-black text-sm font-bold">
-                      {profile.text}
-                    </Text>
-                  </button>
-                </div>
-              </Link>
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="flex gap-4">
-                  {profile.socials[0].instagram && (
-                    <button className="rounded-md  bg-gold p-1 w-[100px] no-underline">
-                      <a
-                        href={`https://www.instagram.com/naranjackson/${profile.socials[0].instagram}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Text className="text-black text-sm font-bold">
-                          Instagram
-                        </Text>
-                      </a>
-                    </button>
-                  )}
-                  {profile.socials[0].linkedin && (
-                    <button className="rounded-md  bg-gold p-1 w-[100px] no-underline">
-                      <a
-                        href={`https://www.linkedin.com/feed/${profile.socials[0].linkedin}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Text className="text-black text-sm font-bold">
-                          LinkedIn
-                        </Text>
-                      </a>
-                    </button>
-                  )}
-                  {profile.socials[0].facebook && (
+      <div className="relative flex flex-col  mx-3 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+          {profiles.map((profile, index) => (
+            <div key={index} className="relative group">
+              <img
+                src={profile.image}
+                alt={profile.text}
+                className="w-full h-full object-cover"
+              />
+              {profile.link ? (
+                <Link to={profile.link}>
+                  <div className="absolute inset-0 flex items-center justify-center text-white text-3xl font-bold opacity-100 transition-opacity duration-300 group-hover:opacity-0">
+                    <Text>{profile.header}</Text>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <button className="rounded-md bg-gold p-1 w-[100px]">
-                      <a
-                        href={`https://www.facebook.com/naran.jackson${profile.socials[0].facebook}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Text className="text-black text-sm font-bold">
-                          Facebook
-                        </Text>
-                      </a>
+                      <Text className="text-black text-sm font-bold">
+                        {profile.text}
+                      </Text>
                     </button>
-                  )}
+                  </div>
+                </Link>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="flex gap-4">
+                    {profile.socials[0].instagram && (
+                      <button className="rounded-md  bg-gold p-1 w-[100px] no-underline">
+                        <a
+                          href={`https://www.instagram.com/naranjackson/${profile.socials[0].instagram}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Text className="text-black text-sm font-bold">
+                            Instagram
+                          </Text>
+                        </a>
+                      </button>
+                    )}
+                    {profile.socials[0].linkedin && (
+                      <button className="rounded-md  bg-gold p-1 w-[100px] no-underline">
+                        <a
+                          href={`https://www.linkedin.com/feed/${profile.socials[0].linkedin}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Text className="text-black text-sm font-bold">
+                            LinkedIn
+                          </Text>
+                        </a>
+                      </button>
+                    )}
+                    {profile.socials[0].facebook && (
+                      <button className="rounded-md bg-gold p-1 w-[100px]">
+                        <a
+                          href={`https://www.facebook.com/naran.jackson${profile.socials[0].facebook}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Text className="text-black text-sm font-bold">
+                            Facebook
+                          </Text>
+                        </a>
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
