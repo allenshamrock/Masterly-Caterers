@@ -34,10 +34,15 @@ function Recipes() {
     <div className="w-full h-auto">
       <div className="relative mx-2 my-2">
         <img
-          className="object-cover object-center w-full h-auto md:h-[500px]"
+          className="object-cover object-center w-full h-auto md:h-[500px] relative"
           src="/recipeHero.jpeg"
           alt="hero"
         />
+
+        <div className="absolute bottom-0 right-0 p-4">
+          <SearchBar onSearch={handleSearch} />
+        </div>
+
         <div className="absolute inset-0 flex flex-col justify-center items-center space-y-2">
           <div className="h-[50px] w-[100px] bg-gold flex justify-center items-center">
             <Text className="uppercase text-black font-bold text-xs">
@@ -51,8 +56,6 @@ function Recipes() {
       </div>
 
       <div className="flex flex-col items-center mt-2">
-        <SearchBar onSearch={handleSearch} />
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {filteredData.map((recipe, index) => (
             <Card

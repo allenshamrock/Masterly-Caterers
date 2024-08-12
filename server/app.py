@@ -517,37 +517,43 @@ class BlogPosts(Resource):
         blogposts = [blogposts.to_dict() for blogposts in BlogPost.query.all()]
         return jsonify(blogposts)
     
+
     def post(self):
-        data = request.get_json()
-        if data is None:
-            return jsonify({"error": "Invalid JSON payload"}), 400
+        data = request.form
+        image_file = request.files.get('file')  # Change 'image' to 'file'
+
+        if image_file:
+            upload_result = cloudinary.uploader.upload(image_file)
+            image_url = upload_result.get('url')
+        else:
+            image_url = None
+
+        title = data.get('title')
+        content = data.get('content')
+        user_id = data.get('user_id')
+
+        if not title or not content or not user_id:
+            return jsonify({"error": "Title, content, and user_id are required"}), 400
+
+        blogpost = BlogPost(
+            title=title,
+            content=content,
+            publish_date=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+            user_id=user_id,
+            image_url=image_url
+        )
 
         try:
-            title = data.get('title')
-            content = data.get('content')
-            user_id = data.get('user_id')
-
-            if not title or not content or not user_id:
-                return jsonify({"error": "Title, content, and user_id are required"}), 400
-
-            blogpost = BlogPost(
-                title=title,
-                content=content,
-                publish_date=datetime.utcnow(),
-                updated_at=datetime.utcnow(),
-                user_id=user_id
-            )
-
             db.session.add(blogpost)
             db.session.commit()
             return make_response(jsonify({"message": "Blogpost successfully created"}), 201)
-
         except IntegrityError:
             db.session.rollback()
             return make_response(jsonify({"message": "Blogpost already exists"}), 400)
-
         except Exception as e:
             return make_response(jsonify({"error": str(e)}), 500)
+
 
 api.add_resource(BlogPosts, '/blogs')
 
