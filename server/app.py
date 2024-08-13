@@ -579,13 +579,28 @@ class BlogPostId(Resource):
         db.session.commit()
         return jsonify({"message":"Blog upldated successfully"})
     
-    def delete(self,id):
-        blogs = BlogPost.query.filter(BlogPost.id==id).first()
-        if not blogs:
-            return jsonify({"error":"Blog not found"}), 404
-        db.session.delete(blogs)
+    # def delete(self,id):
+    #     blogs = BlogPost.query.filter(BlogPost.id==id).first()
+    #     if not blogs:
+    #         return jsonify({"error":"Blog not found"}), 404
+    #     db.session.delete(blogs)
+    #     db.session.commit()
+    #     return jsonify({"message":"Blog delted successfully"}), 200
+    
+    def delete(self, id):
+        logging.debug(f"Attempting to delete blog with ID: {id}")
+        blog = BlogPost.query.filter_by(id=id).first()
+        if not blog:
+            logging.debug("Blog not found.")
+            return jsonify({"error": "Blog not found"}), 404
+
+        db.session.delete(blog)
         db.session.commit()
-        return jsonify({"message":"Blog delted successfully"}), 200
+
+        response = jsonify({"message": "Blog deleted successfully"})
+        logging.debug(f"Response: {response.get_json()}")
+        return response, 200
+
     
 api.add_resource(BlogPostId, '/blogs/<int:id>')
 

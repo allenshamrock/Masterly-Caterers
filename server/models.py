@@ -68,7 +68,7 @@ class Gallery(db.Model, SerializerMixin):
 class BlogPost(db.Model, SerializerMixin):
     __tablename__ = 'blogposts'
     serialize_only = ('id', 'title', 'content',
-                      'publish_date', 'updated_at', 'user_id')
+                      'publish_date', 'updated_at', 'image_url', 'user_id')
     id = db.Column(db.Integer, primary_key=True)
     image_url = db.Column(db.String,nullable=False)
     title = db.Column(db.String(255), nullable=False)

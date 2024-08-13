@@ -1,6 +1,9 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { selectUserData,selectCurrentIsRole} from "../features/auth/Authslice";
+import {
+  selectUserData,
+  selectCurrentIsRole,
+} from "../features/auth/Authslice";
 import {
   Modal,
   ModalBody,
@@ -13,12 +16,13 @@ import {
   useDisclosure,
   ModalFooter,
 } from "@chakra-ui/react";
+import PostContainer from '../components/PostContainer'
 import { FaImages } from "react-icons/fa";
 import { IoAdd } from "react-icons/io5";
 const Blog = () => {
   const user = useSelector(selectUserData);
-  const role = useSelector(selectCurrentIsRole)
-  console.log("current user role", role)
+  const role = useSelector(selectCurrentIsRole);
+  console.log("current user role", role);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [file, setFile] = useState(null);
@@ -118,7 +122,7 @@ const Blog = () => {
     });
   };
   return (
-    <div className="h-screen w-full">
+    <div className="h-auto w-full">
       <div className="mx-2 my-2 relative ">
         <img
           src="/blogHero.jpeg"
@@ -128,7 +132,7 @@ const Blog = () => {
         {role === "admin" && (
           <>
             <button
-              className="absolute bottom-0 right-0 p-2 md:p-4  rounded-full bg-gold border font-bold flex justify-center align-middle text-black hover:bg-grey m-4 "
+              className="absolute top-0 right-0 p-2 md:p-4  rounded-full bg-gold border font-bold flex justify-center align-middle text-black hover:bg-grey m-4 "
               onClick={onOpen}
             >
               <IoAdd fontSize={"1.5rem"} />
@@ -238,9 +242,17 @@ const Blog = () => {
             </Modal>
           </>
         )}
+        <div className=" flex flex-col items-center  mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <PostContainer />
+          </div>
+        </div>
+        ;
       </div>
     </div>
   );
 };
 
 export default Blog;
+
+
