@@ -39,11 +39,11 @@ with app.app_context():
 
     print("Adding blogposts...")
     blogs = [
-        BlogPost(title=fake.sentence(), content=fake.text(),
+        BlogPost(title=fake.sentence(), content=fake.text(),image_url='pic',
                  publish_date=datetime.now(), updated_at=datetime.now()),
-        BlogPost(title=fake.sentence(), content=fake.text(),
+        BlogPost(title=fake.sentence(), content=fake.text(), image_url='pic',
                  publish_date=datetime.now(), updated_at=datetime.now()),
-        BlogPost(title=fake.sentence(), content=fake.text(),
+        BlogPost(title=fake.sentence(), content=fake.text(), image_url='pic',
                  publish_date=datetime.now(), updated_at=datetime.now())
     ]
 

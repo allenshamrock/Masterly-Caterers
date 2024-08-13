@@ -35,5 +35,5 @@ export default AuthSlice.reducer;
 
 export const selectCurrentUser = (state) => state?.auth?.username; // Export the current user information after login
 export const selectCurrentToken = (state) => state?.auth?.accessToken; // Export the current user access token after login
-export const selectCurrentIsRole = (state) => state?.auth?.user?.isRole;
-export const selectUserData = (state) => state?.auth.user;
+export const selectCurrentIsRole = (state) => state?.auth?.user?.role;
+export const selectUserData = (state) => state?.auth?.user;

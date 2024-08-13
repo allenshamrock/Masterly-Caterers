@@ -42,6 +42,7 @@ const Login = () => {
         email: values.email,
         password: values.password,
       });
+      console.log(response)
       const { access_token, username, role, content } = response.data;
       localStorage.setItem("access", access_token);
       localStorage.setItem("username", username);
