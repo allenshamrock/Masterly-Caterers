@@ -7,6 +7,7 @@ import Recipes from "./pages/Recipes";
 import Recipe from "./pages/Recipe";
 import Blogs from "./pages/Blogs";
 import BlogPost from './pages/BlogPost'
+import Gallery from "./pages/Gallery";
 const App = () => {
   return (
     <main>
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/recipes/:id" element={<Recipe />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path = '/blogs/:id' element={<BlogPost/>} />
+        <Route path="/gallery" element={<Gallery/>} />
       </Routes>
       <Footer />
     </main>

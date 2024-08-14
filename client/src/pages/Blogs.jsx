@@ -22,7 +22,7 @@ import { IoAdd } from "react-icons/io5";
 const Blogs = () => {
   const user = useSelector(selectUserData);
   const role = useSelector(selectCurrentIsRole);
-  console.log("current user role", role);
+  // console.log("current user role",: role);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [file, setFile] = useState(null);
