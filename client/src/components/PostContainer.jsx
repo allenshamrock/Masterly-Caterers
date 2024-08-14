@@ -13,45 +13,14 @@ import {
 } from "@chakra-ui/react";
 import { FaTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 
 const PostContainer = () => {
   const { blogs, setBlogs, isLoading, error } = useFetchBlogs();
   const role = useSelector(selectCurrentIsRole);
-  const toast = useToast()
 
-const deleteBlog = async (blogId) => {
-  try {
-    const response = await fetch(`http://127.0.0.1:5555/blogs/${blogId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
 
-    if (!response.ok) {
-      throw new Error( "Failed to delete blog post");
-    }
-
-    // Update the state to reflect the deleted blog
-    setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.id !== blogId));
-    toast({
-      title: "Post Deleted",
-      description: "The blog post has been deleted successfully.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-  } catch (error) {
-    toast({
-      title: "Error",
-      description: error.message,
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  }
-};
 
   if (isLoading) {
     return (
@@ -69,7 +38,7 @@ const deleteBlog = async (blogId) => {
   return (
     <div className="flex flex-col justify-center items-center space-y-3">
       {blogs.map((blog, index) => (
-        <Card maxW="sm" key={index} className="mx-auto">
+        <Card maxW="sm" key={index} as={Link} to={`/blogs/${blog.id}`} className="mx-auto">
           <CardBody>
             <Image
               src={blog.image_url}

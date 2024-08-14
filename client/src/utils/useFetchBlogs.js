@@ -1,6 +1,7 @@
-import React,{ useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-const useFetchBlogs = () => {
+//This blogId parameter allows for the specific id of a blog to fetch.if blog id is null or undefined it fetches all blogs
+const useFetchBlogs = (blogId = null) => {
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -9,12 +10,15 @@ const useFetchBlogs = () => {
     const fetchBlogs = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://127.0.0.1:5555/blogs");
+        const url = blogId
+          ? `http://127.0.0.1:5555/blogs/${blogId}`
+          : "http://127.0.0.1:5555/blogs";
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch blogs");
         }
         const data = await response.json();
-        setBlogs(data);
+        setBlogs(blogId ? [data] : data); //Setting a single blog  post  wrapped in an array,otherwise set all blogs
       } catch (error) {
         setError(error.message);
       } finally {
@@ -23,9 +27,8 @@ const useFetchBlogs = () => {
     };
 
     fetchBlogs();
-  }, []);
+  }, [blogId]); // Re-mounts when the blogId changes
 
-
-  return { blogs,setBlogs, isLoading, error };
+  return { blogs, setBlogs, isLoading, error };
 };
-export default useFetchBlogs
+export default useFetchBlogs;

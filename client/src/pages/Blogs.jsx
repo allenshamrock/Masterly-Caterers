@@ -16,10 +16,10 @@ import {
   useDisclosure,
   ModalFooter,
 } from "@chakra-ui/react";
-import PostContainer from '../components/PostContainer'
+import PostContainer from "../components/PostContainer";
 import { FaImages } from "react-icons/fa";
 import { IoAdd } from "react-icons/io5";
-const Blog = () => {
+const Blogs = () => {
   const user = useSelector(selectUserData);
   const role = useSelector(selectCurrentIsRole);
   console.log("current user role", role);
@@ -247,12 +247,9 @@ const Blog = () => {
             <PostContainer />
           </div>
         </div>
-        ;
       </div>
     </div>
   );
 };
 
-export default Blog;
-
-
+export default Blogs;

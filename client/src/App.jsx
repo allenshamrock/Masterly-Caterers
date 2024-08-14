@@ -5,7 +5,8 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Recipes from "./pages/Recipes";
 import Recipe from "./pages/Recipe";
-import Blog from "./pages/Blog";
+import Blogs from "./pages/Blogs";
+import BlogPost from './pages/BlogPost'
 const App = () => {
   return (
     <main>
@@ -14,7 +15,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/recipes" element={<Recipes />} />
         <Route path="/recipes/:id" element={<Recipe />} />
-        <Route path="/blogs" element={<Blog />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path = '/blogs/:id' element={<BlogPost/>} />
       </Routes>
       <Footer />
     </main>
