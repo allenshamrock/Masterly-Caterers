@@ -81,7 +81,7 @@ const Login = () => {
       onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
-        <Form>
+        <Form className="font-libre">
           <h1 className="text-center text-3xl font-bold text-[#FFD700]">
             Login to Masterly Caterers
           </h1>

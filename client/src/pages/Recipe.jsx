@@ -77,7 +77,7 @@ function Recipe() {
 
   return (
     <div className="w-full h-auto overflow-hidden">
-      <div className="mx-3 mt-2 bg-gray-200 flex flex-col">
+      <div className="mx-3 mt-2 bg-gray-200 flex flex-col font-libre">
         <div className="flex flex-col mt-4 space-y-3">
           <div className="grid md:grid-cols-2 space-y-3">
             <div className="w-full">

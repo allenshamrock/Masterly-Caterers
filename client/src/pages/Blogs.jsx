@@ -48,7 +48,7 @@ const Blogs = () => {
 
   return (
     <div className="h-auto w-full">
-      <div className="mx-2 my-2 relative">
+      <div className="mx-2 my-2 relative font-libre">
         <img
           src="/blogHero.jpeg"
           alt="A GIF photo"

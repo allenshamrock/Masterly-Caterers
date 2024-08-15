@@ -93,7 +93,7 @@ const GalleryContainer = () => {
               <Text>{media.content}</Text>
             </CardBody>
             <Divider />
-            <CardFooter className="flex justify-between items-center">
+            <CardFooter className="flex justify-between items-center gap-2">
               <Text className="font-semibold ">
                 Published at :
                 <span>

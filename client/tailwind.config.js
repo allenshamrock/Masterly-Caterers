@@ -7,8 +7,10 @@ export default {
         gold: "#FFD700",
         grey: "#d4d4d4",
       },
+      fontFamily: {
+        libre: ["'Libre Baskerville'", "serif"],
+      },
     },
   },
   plugins: [],
 };
-

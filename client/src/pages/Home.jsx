@@ -73,10 +73,10 @@ const Home = () => {
     <div className="h-full w-full">
       <div className="flex flex-col md:flex-row h:auto md:h-[400px] mx-3 my-2 bg-black">
         <div className="flex flex-col md:my-[120px] md:mx-8 mx-3 my-2 space-y-5">
-          <Text className="text-xl font-semibold text-grey">
+          <Text className="text-xl font-semibold text-grey font-libre ">
             Always Chasing Flavours
           </Text>
-          <Text className="text-6xl font-bold text-gold">
+          <Text className="text-6xl font-libre font-bold text-gold">
             Chef Naran Jackson
           </Text>
         </div>
@@ -104,8 +104,8 @@ const Home = () => {
           ))}
         </Swiper>
       </div>
-      <div className="relative flex flex-col mx-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+      <div className="relative flex flex-col mx-3 ">
+        <div className=" font-libre grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 ">
           {profiles.map((profile, index) => (
             <div key={index} className="relative group">
               <img

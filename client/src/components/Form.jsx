@@ -12,7 +12,7 @@ const Form = ({
   onClose,
 }) => {
   return (
-    <form className="block w-full" onSubmit={handleSubmit}>
+    <form className="block w-full font-libre" onSubmit={handleSubmit}>
       <h1 className="font-bold text-2xl text-slate-900">Create a Post</h1>
       <h3 className="font-bold">Text</h3>
       <input

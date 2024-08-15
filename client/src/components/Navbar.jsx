@@ -21,6 +21,7 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  Image,
 } from "@chakra-ui/react";
 import { RiAccountCircleFill } from "react-icons/ri";
 
@@ -39,8 +40,9 @@ const Navbar = () => {
   };
 
   return (
-    <div className="text-black-600 flex justify-between  items-center bg-[#111] w-[100%] font-semibold py-[20px] overflow-hidden pr-[10px]">
-      <Text className="bg-slate-100 h-[30px] px-3">Logo</Text>
+    <div className="font-libre text-black-600 flex justify-between  items-center bg-[#111] w-[100%] font-semibold py-[20px] overflow-hidden pr-[10px]">
+      <Image src="/logo.png" className="text-4xl h-[60px] w-auto px-3" />
+
       <nav className="sm:gap-[12px] hidden md:flex md:gap-[30px] pr-[10px] ml-auto">
         <NavLink className="nav-links" to={"/"}>
           Home
