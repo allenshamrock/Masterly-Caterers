@@ -18,7 +18,7 @@ import {
   selectCurrentIsRole,
   selectUserData,
 } from "../features/auth/Authslice";
-import ReusableForm from "../components/Form";
+import Form from "../components/Form";
 import useFormHandler from "../utils/useFormHandler";
 
 const Blogs = () => {
@@ -76,7 +76,7 @@ const Blogs = () => {
                 <ModalHeader></ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                  <ReusableForm
+                  <Form
                     input={input}
                     file={file}
                     handleChange={handleChange}

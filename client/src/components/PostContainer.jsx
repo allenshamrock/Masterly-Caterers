@@ -9,7 +9,6 @@ import {
   Heading,
   Image,
   Text,
-  useToast,
 } from "@chakra-ui/react";
 import { FaTrashAlt } from "react-icons/fa";
 import { useSelector } from "react-redux";

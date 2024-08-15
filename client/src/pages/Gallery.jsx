@@ -17,8 +17,9 @@ import {
   selectCurrentIsRole,
   selectUserData,
 } from "../features/auth/Authslice";
-import ReusableForm from "../components/Form";
+import Form from "../components/Form";
 import useFormHandler from "../utils/useFormHandler";
+import GalleryContainer from "../components/GalleryContainer";
 
 const Gallery = () => {
   const role = useSelector(selectCurrentIsRole);
@@ -75,7 +76,7 @@ const Gallery = () => {
                 <ModalHeader></ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                  <ReusableForm
+                  <Form
                     input={input}
                     file={file}
                     handleChange={handleChange}
@@ -90,6 +91,11 @@ const Gallery = () => {
             </Modal>
           </>
         )}
+        <div className=" flex flex-col items-center  mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <GalleryContainer/>
+          </div>
+        </div>
       </div>
     </div>
   );

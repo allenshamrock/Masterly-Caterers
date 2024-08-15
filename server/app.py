@@ -337,7 +337,6 @@ class GalleryId(Resource):
         db.session.commit()
         return make_response(jsonify({'message': 'meadia updated successfully'}), 200)
 
-    @admin_required
     def delete(self, id):
         gallery = Gallery.query.filter(Gallery.id == id).first()
         if not gallery:
