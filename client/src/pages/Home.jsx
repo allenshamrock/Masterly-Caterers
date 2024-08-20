@@ -52,7 +52,7 @@ const Home = () => {
       image: "/blog.jpeg",
       text: "Blogs",
       header: "Books",
-      link: "/books",
+      link: "/blogs",
     },
     {
       image: "/budget.jpeg",

@@ -18,6 +18,7 @@ const GalleryContainer = () => {
   const { media, setMedia, isLoading, error } = useFetchMedia();
   const toast = useToast();
   const role = useSelector(selectCurrentIsRole);
+  console.log(role)
 
   if (isLoading) {
     return (
@@ -97,7 +98,6 @@ const GalleryContainer = () => {
               <Text className="font-semibold ">
                 Published at :
                 <span>
-                  {" "}
                   {new Date(media.publish_date).toLocaleDateString()}
                 </span>
               </Text>

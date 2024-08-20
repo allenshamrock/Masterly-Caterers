@@ -24,6 +24,8 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { RiAccountCircleFill } from "react-icons/ri";
+import Logout from "./authentication/Logout";
+import useAuth from "../features/auth/useAuth";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -36,8 +38,10 @@ const Navbar = () => {
 
   const handleAccountIconClick = () => {
     onClose();
-    onLoginOpen()
+    onLoginOpen();
   };
+
+  const isAuthorized = useAuth(["user", "admin"]);
 
   return (
     <div className="font-libre text-black-600 flex justify-between  items-center bg-[#111] w-[100%] font-semibold py-[20px] overflow-hidden pr-[10px]">
@@ -62,10 +66,14 @@ const Navbar = () => {
         <NavLink className="nav-links" to={"/gallery"}>
           Gallery & Media
         </NavLink>
-        <RiAccountCircleFill
-          className="text-[#d4d4d4] text-2xl mb-2 cursor-pointer"
-          onClick={handleAccountIconClick}
-        />
+        {isAuthorized ? (
+          <Logout />
+        ) : (
+          <RiAccountCircleFill
+            className="text-[#d4d4d4] text-2xl mb-2 cursor-pointer"
+            onClick={handleAccountIconClick}
+          />
+        )}
       </nav>
 
       <Flex className="flex md:hidden pr-[4px]">
@@ -97,10 +105,6 @@ const Navbar = () => {
                 }}
               >
                 Home
-                <RiAccountCircleFill
-                  className="text-[#d4d4d4] text-2xl mb-2 cursor-pointer ml-auto"
-                  onClick={handleAccountIconClick}
-                />
               </NavLink>
               <NavLink
                 className={"nav-links drawer-link"}
@@ -152,6 +156,19 @@ const Navbar = () => {
               >
                 Gallery & Media
               </NavLink>
+              <div className="w-full bg-gold flex items-center justify-center">
+                {isAuthorized ? (
+                  <Logout />
+                ) : (
+                  <button
+                    onClick={handleAccountIconClick}
+                    className="cursor-pointer w-[150px] text-black p-2 flex items-center  justify-center gap-2"
+                  >
+                    Login
+                    <RiAccountCircleFill className="text-2xl" />
+                  </button>
+                )}
+              </div>
             </DrawerBody>
 
             <DrawerFooter className="block ">
