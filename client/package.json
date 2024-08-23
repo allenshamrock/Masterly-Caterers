@@ -18,6 +18,7 @@
     "@reduxjs/toolkit": "^2.2.6",
     "@tanstack/react-query": "^5.51.24",
     "@tanstack/react-query-devtools": "^5.51.24",
+    "aos": "^3.0.0-beta.6",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "formik": "^2.4.6",

@@ -18,7 +18,7 @@ const GalleryContainer = () => {
   const { media, setMedia, isLoading, error } = useFetchMedia();
   const toast = useToast();
   const role = useSelector(selectCurrentIsRole);
-  console.log(role)
+  // console.log(role)
 
   if (isLoading) {
     return (

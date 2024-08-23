@@ -85,15 +85,16 @@ class Quote(db.Model, SerializerMixin):
     serialize_only = ('id', 'name', 'description', 'price', 'category')
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    date = db.Column(db.DateTime,nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)
     address = db.Column(db.String(100), nullable=False)
     bookings = db.relationship(
-        'Booking', back_populates='quotes', cascade='all, delete-orphan')
+        'Booking', back_populates='quote', cascade='all, delete-orphan')
     promotions = db.relationship(
         'Promotion', back_populates='quote', cascade='all, delete-orphan')
+
 
 
 class Promotion(db.Model):
@@ -131,6 +132,3 @@ class Booking(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='bookings')
     quote = db.relationship('Quote', back_populates='bookings')
     promotion = db.relationship('Promotion', back_populates='bookings')
-
-    # Add this property to match the 'quotes' relationship in Quote
-    quotes = db.relationship('Quote', back_populates='bookings')

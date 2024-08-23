@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from flask import request, jsonify,make_response,session,url_for,redirect
+from flask import request, jsonify,make_response,session
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from models import User, Booking, BlogPost, Gallery,Quote
@@ -45,16 +45,7 @@ google = oauth.register(
 
 
 
-def admin_required(fn):
-    @wraps(fn)
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        identity = get_jwt_identity()
-        user = User.query.filter_by(id=identity['id']).first()
-        if not user or not user.is_admin:
-            return jsonify({"error": "Admin access required"}), 403
-        return fn(*args, **kwargs)
-    return wrapper
+
 
 class Users(Resource):
     def get(self):
@@ -250,7 +241,7 @@ class Galleries(Resource):
         galleries = [gallery.to_dict() for gallery in Gallery.query.all()]
         return make_response(jsonify(galleries),200)
     
-    @admin_required
+   
     def post(self):
         app.logger.info(f"Form data:{request.form}")
         app.logger.info(f"Files:{request.files}")
@@ -322,7 +313,7 @@ class GalleryId(Resource):
             return make_response(jsonify({"error":"Media not found"}),404)
         return jsonify(media.to_dict())
     
-    @admin_required
+
     def patch(self, id):
         gallery = Gallery.query.filter(Gallery.id == id).first()
         if not gallery:
