@@ -427,12 +427,11 @@ class Bookings(Resource):
             event_date = datetime.strptime(event_date_str, '%Y-%m-%d')
             event_type = data.get('event_type')
             guest_count = data.get('guest_count')
-            menu_id = data.get('menu_id')
             special_requests = data.get('special_requests')
 
             # Validate required fields
-            if not user_id or not event_date or not event_type or not guest_count or not menu_id:
-                return jsonify({"error": "user_id, event_date, event_type, guest_count, and menu_id are required"}), 400
+            if not user_id or not event_date or not event_type or not guest_count :
+                return jsonify({"error": "user_id, event_date, event_type, guest_count and special_requests are required"}), 400
 
             # Create a new Booking instance
             booking = Booking(
@@ -440,7 +439,6 @@ class Bookings(Resource):
                 event_date=event_date,
                 event_type=event_type,
                 guest_count=guest_count,
-                menu_id=menu_id,
                 special_requests=special_requests,
                 booking_date=datetime.utcnow()
             )

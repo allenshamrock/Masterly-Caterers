@@ -1,5 +1,5 @@
 from config import app, db
-from models import BlogPost, Booking, User, Gallery, Promotion,Quote
+from models import BlogPost, Booking, User, Gallery, Promotion, Quote
 from faker import Faker
 from datetime import datetime
 
@@ -39,7 +39,7 @@ with app.app_context():
 
     print("Adding blogposts...")
     blogs = [
-        BlogPost(title=fake.sentence(), content=fake.text(),image_url='pic',
+        BlogPost(title=fake.sentence(), content=fake.text(), image_url='pic',
                  publish_date=datetime.now(), updated_at=datetime.now()),
         BlogPost(title=fake.sentence(), content=fake.text(), image_url='pic',
                  publish_date=datetime.now(), updated_at=datetime.now()),
@@ -51,7 +51,7 @@ with app.app_context():
         db.session.add(blog)
         db.session.commit()
 
-    print("Adding menus..")
+    print("Adding quotes..")
     quotes = [
         Quote(name=fake.name(), description=fake.text(),
               price=10000, address=fake.word(), phone_number="0757772601", date=datetime(2024, 8, 1)),
@@ -65,18 +65,17 @@ with app.app_context():
         db.session.add(quote)
         db.session.commit()
 
-    # Fetch users and menus for creating bookings
+    # Fetch user IDs for creating bookings
     user_ids = [user.id for user in User.query.all()]
-    quote_ids = [quote.id for menu in Quote.query.all()]
 
     print("Adding bookings..")
     bookings = [
         Booking(user_id=user_ids[0], event_date=datetime(2025, 2, 2), event_type='Wedding',
-                guest_count=5, quote_id=quote_ids[0], special_requests=fake.text(), booking_date=datetime.now()),
+                guest_count=5, special_requests=fake.text(), booking_date=datetime.now()),
         Booking(user_id=user_ids[1], event_date=datetime(2025, 2, 2), event_type='Corporate Event',
-                guest_count=10, quote_id=quote_ids[1], special_requests=fake.text(), booking_date=datetime.now()),
+                guest_count=10, special_requests=fake.text(), booking_date=datetime.now()),
         Booking(user_id=user_ids[2], event_date=datetime(2025, 2, 2), event_type='Birthday Party',
-                guest_count=15, quote_id=quote_ids[2], special_requests=fake.text(), booking_date=datetime.now())
+                guest_count=15, special_requests=fake.text(), booking_date=datetime.now())
     ]
 
     for booking in bookings:
@@ -93,25 +92,25 @@ with app.app_context():
                   end_date=datetime(2024, 8, 1), season_holiday="Summer", discount=25.0, conditions="Minimum $25 spend")
     ]
 
-    for promotion in promotions:
-        db.session.add(promotion)
-        db.session.commit()
+    # for promotion in promotions:
+    #     db.session.add(promotion)
+    #     db.session.commit()
 
-    # Fetch promotion IDs for creating bookings
-    promotion_ids = [promotion.id for promotion in Promotion.query.all()]
+    # # Fetch promotion IDs for creating bookings with promotions
+    # promotion_ids = [promotion.id for promotion in Promotion.query.all()]
 
-    print("Adding bookings with promotions..")
-    bookings_with_promotions = [
-        Booking(user_id=user_ids[0], event_date=datetime(2025, 3, 2), event_type='Wedding',
-                guest_count=5, quote_id=quote_ids[0], promotion_id=promotion_ids[0], special_requests=fake.text(), booking_date=datetime.now()),
-        Booking(user_id=user_ids[1], event_date=datetime(2025, 3, 2), event_type='Corporate Event',
-                guest_count=10, quote_id=quote_ids[1], promotion_id=promotion_ids[1], special_requests=fake.text(), booking_date=datetime.now()),
-        Booking(user_id=user_ids[2], event_date=datetime(2025, 3, 2), event_type='Birthday Party',
-                guest_count=15, quote_id=quote_ids[2], promotion_id=promotion_ids[2], special_requests=fake.text(), booking_date=datetime.now())
-    ]
+    # print("Adding bookings with promotions..")
+    # bookings_with_promotions = [
+    #     Booking(user_id=user_ids[0], event_date=datetime(2025, 3, 2), event_type='Wedding',
+    #             guest_count=5, promotion_id=promotion_ids[0], special_requests=fake.text(), booking_date=datetime.now()),
+    #     Booking(user_id=user_ids[1], event_date=datetime(2025, 3, 2), event_type='Corporate Event',
+    #             guest_count=10, promotion_id=promotion_ids[1], special_requests=fake.text(), booking_date=datetime.now()),
+    #     Booking(user_id=user_ids[2], event_date=datetime(2025, 3, 2), event_type='Birthday Party',
+    #             guest_count=15, promotion_id=promotion_ids[2], special_requests=fake.text(), booking_date=datetime.now())
+    # ]
 
-    for booking in bookings_with_promotions:
-        db.session.add(booking)
-        db.session.commit()
+    # for booking in bookings_with_promotions:
+    #     db.session.add(booking)
+    #     db.session.commit()
 
     print("Seeding complete!")

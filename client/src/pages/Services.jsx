@@ -1,7 +1,23 @@
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import {  Image, Text } from "@chakra-ui/react";
+import {
+  Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
+import useBookingForm from "../utils/useBookingForm";
+import QuoteForm from "../components/QuoteForm";
+import { useSelector } from "react-redux";
+import { selectUserData } from "../features/auth/Authslice";
 
 function Services() {
   useEffect(() => {
@@ -11,6 +27,22 @@ function Services() {
       once: false,
     });
   }, []);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const user = useSelector(selectUserData);
+  // console.log(user.id)
+  const { input, isLoading, handleChange, handleSubmit } = useBookingForm(
+    {
+      user_id: user.id,
+      event_date: "",
+      event_type: "",
+      guest_count: "",
+      special_requests: "",
+    },
+    user,
+    toast
+  );
 
   return (
     <div className="h-auto w-full ">
@@ -80,9 +112,35 @@ function Services() {
               book your culinary experience and let us take care of the rest!
             </Text>
             <div className="flex items-center justify-center my-3">
-              <button className="w-[150px] p-2 text-center bg-gold rounded-md animate-bounce">
+              <button
+                className="w-[150px] p-2 text-center bg-gold rounded-md animate-bounce"
+                onClick={onOpen}
+              >
                 Make a Booking
               </button>
+              <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                isCentered
+                size={"2xl"}
+                motionPreset="slideInBottom"
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader></ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <QuoteForm
+                      input={input}
+                      handleChange={handleChange}
+                      handleSubmit={handleSubmit}
+                      isLoading={isLoading}
+                      onClose={onClose}
+                    />
+                  </ModalBody>
+                  <ModalFooter />
+                </ModalContent>
+              </Modal>
             </div>
           </div>
           <div
@@ -104,5 +162,3 @@ function Services() {
 }
 
 export default Services;
-
-
