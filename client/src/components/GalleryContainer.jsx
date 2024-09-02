@@ -29,7 +29,7 @@ const GalleryContainer = () => {
   const deleteMedia = async (galleryId) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:5555/gallery/${galleryId}`,
+        `https://masterly-caterers.onrender.com/gallery/${galleryId}`,
         {
           method: "DELETE",
           headers: {
@@ -97,9 +97,7 @@ const GalleryContainer = () => {
             <CardFooter className="flex justify-between items-center gap-2">
               <Text className="font-semibold ">
                 Published at :
-                <span>
-                  {new Date(media.publish_date).toLocaleDateString()}
-                </span>
+                <span>{new Date(media.publish_date).toLocaleDateString()}</span>
               </Text>
 
               {role === "admin" && (
