@@ -54,11 +54,11 @@ with app.app_context():
     print("Adding quotes..")
     quotes = [
         Quote(name=fake.name(), description=fake.text(),
-              price=10000, address=fake.word(), phone_number="0757772601", date=datetime(2024, 8, 1)),
+              price=10000, address=fake.word(), phone_number="0757772601", event_date=datetime(2024, 8, 1)),
         Quote(name=fake.name(), description=fake.text(),
-              price=10000, address=fake.word(), phone_number="0757772601", date=datetime(2024, 8, 1)),
+              price=10000, address=fake.word(), phone_number="0757772601", event_date=datetime(2024, 8, 1)),
         Quote(name=fake.name(), description=fake.text(),
-              price=10000, address=fake.word(), phone_number="0757772601", date=datetime(2024, 8, 1))
+              price=10000, address=fake.word(), phone_number="0757772601", event_date=datetime(2024, 8, 1))
     ]
 
     for quote in quotes:

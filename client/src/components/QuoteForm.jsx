@@ -1,5 +1,4 @@
 import { Textarea } from "@chakra-ui/react";
-import React, { useState } from "react";
 
 const QuoteForm = ({ input, handleChange, handleSubmit, isLoading }) => {
   // Get today's date in the format yyyy-mm-dd

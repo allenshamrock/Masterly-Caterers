@@ -16,6 +16,8 @@ import {
 } from "@chakra-ui/react";
 import useBookingForm from "../utils/useBookingForm";
 import QuoteForm from "../components/QuoteForm";
+import Quote from "../components/Quote";
+import useQuoteForm from "../utils/useQuoteForm";
 import { useSelector } from "react-redux";
 import { selectUserData } from "../features/auth/Authslice";
 
@@ -28,11 +30,15 @@ function Services() {
     });
   }, []);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const user = useSelector(selectUserData);
-    // console.log(user.id)
-  const { input, isLoading, handleChange, handleSubmit } = useBookingForm(
+
+  const {
+    input: bookingInput,
+    isLoading: bookingLoading,
+    handleChange: handleBookingChange,
+    handleSubmit: handleBookingSubmit,
+  } = useBookingForm(
     {
       user_id: user.id,
       event_date: "",
@@ -43,6 +49,38 @@ function Services() {
     toast,
     user
   );
+
+  const {
+    input: quoteInput,
+    isLoading: quoteLoading,
+    handleChange: handleQuoteChange,
+    handleSubmit: handleQuoteSubmit,
+  } = useQuoteForm(
+    {
+      user_id: user.id,
+      name: "",
+      description: "",
+      price: "",
+      event_date: "",
+      address: "",
+      phone_number: "",
+    },
+    user,
+    toast
+  );
+
+  // Separate useDisclosure for each modal
+  const {
+    isOpen: isQuoteModalOpen,
+    onOpen: onQuoteModalOpen,
+    onClose: onQuoteModalClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isBookingModalOpen,
+    onOpen: onBookingModalOpen,
+    onClose: onBookingModalClose,
+  } = useDisclosure();
 
   return (
     <div className="h-auto w-full ">
@@ -87,9 +125,35 @@ function Services() {
               promptly prepare a customized quote to suit your needs.
             </Text>
             <div className="flex items-center justify-center my-3">
-              <button className="w-[150px] p-2 text-center bg-gold rounded-md animate-bounce">
+              <button
+                onClick={onQuoteModalOpen}
+                className="w-[150px] p-2 text-center bg-gold rounded-md animate-bounce"
+              >
                 Request Quote
               </button>
+              <Modal
+                isOpen={isQuoteModalOpen}
+                onClose={onQuoteModalClose}
+                isCentered
+                size={"2xl"}
+                motionPreset="slideInBottom"
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader></ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Quote
+                      input={quoteInput}
+                      handleChange={handleQuoteChange}
+                      handleSubmit={handleQuoteSubmit}
+                      isLoading={quoteLoading}
+                      onClose={onQuoteModalClose}
+                    />
+                  </ModalBody>
+                  <ModalFooter />
+                </ModalContent>
+              </Modal>
             </div>
           </div>
         </div>
@@ -114,13 +178,13 @@ function Services() {
             <div className="flex items-center justify-center my-3">
               <button
                 className="w-[150px] p-2 text-center bg-gold rounded-md animate-bounce"
-                onClick={onOpen}
+                onClick={onBookingModalOpen}
               >
                 Make a Booking
               </button>
               <Modal
-                isOpen={isOpen}
-                onClose={onClose}
+                isOpen={isBookingModalOpen}
+                onClose={onBookingModalClose}
                 isCentered
                 size={"2xl"}
                 motionPreset="slideInBottom"
@@ -131,11 +195,11 @@ function Services() {
                   <ModalCloseButton />
                   <ModalBody>
                     <QuoteForm
-                      input={input}
-                      handleChange={handleChange}
-                      handleSubmit={handleSubmit}
-                      isLoading={isLoading}
-                      onClose={onClose}
+                      input={bookingInput}
+                      handleChange={handleBookingChange}
+                      handleSubmit={handleBookingSubmit}
+                      isLoading={bookingLoading}
+                      onClose={onBookingModalClose}
                     />
                   </ModalBody>
                   <ModalFooter />

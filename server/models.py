@@ -82,7 +82,7 @@ class Quote(db.Model, SerializerMixin):
     serialize_only = ('id', 'name', 'description', 'price', 'category')
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    date = db.Column(db.DateTime, nullable=False)
+    event_date = db.Column(db.DateTime, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
     description = db.Column(db.Text, nullable=False)
     price = db.Column(db.Float, nullable=False)

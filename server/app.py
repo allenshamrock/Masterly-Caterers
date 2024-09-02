@@ -354,7 +354,9 @@ class Quotes(Resource):
             price = data.get('price')
             phone_number = data.get('phone_number')
             address = data.get('address')
-            date = data.get('date')
+            event_date_str = data.get('event_date')
+            # Convert string to datetime object
+            event_date = datetime.strptime(event_date_str, '%Y-%m-%d')
 
             quote= Quote(
                 name=name,
@@ -362,7 +364,7 @@ class Quotes(Resource):
                 price=price,
                 phone_number = phone_number,
                 address = address,
-                date=date
+                event_date=event_date
             )
             db.session.add(quote)
             db.session.commit()
