@@ -58,7 +58,7 @@ const Home = () => {
       image: "/budget.jpeg",
       text: "Quote",
       header: "Budget",
-      link: "/budget",
+      link: "/services",
     },
     {
       image: "/profile.jpeg",

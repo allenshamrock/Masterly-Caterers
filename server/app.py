@@ -13,7 +13,7 @@ from authlib.integrations.flask_client import OAuth
 import cloudinary.api
 from dotenv import load_dotenv
 import os
-from functools import wraps
+
 
 load_dotenv()
 oauth = OAuth(app)

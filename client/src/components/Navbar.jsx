@@ -57,9 +57,7 @@ const Navbar = () => {
         <NavLink className="nav-links" to={"/services"}>
           Services
         </NavLink>
-        <NavLink className="nav-links" to={"/contact"}>
-          Contact us
-        </NavLink>
+   
         <NavLink className="nav-links" to={"/blogs"}>
           Blogs
         </NavLink>
@@ -126,16 +124,7 @@ const Navbar = () => {
               >
                 Services
               </NavLink>
-              <NavLink
-                className={"nav-links drawer-link"}
-                to={"/services"}
-                smooth="true"
-                onClick={() => {
-                  onClose();
-                }}
-              >
-                Contact us
-              </NavLink>
+
               <NavLink
                 className={"nav-links drawer-link"}
                 to={"/blogs"}

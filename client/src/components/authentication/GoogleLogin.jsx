@@ -13,7 +13,7 @@ const LoginGoogle = () => {
  const googleLogin = useGoogleLogin({
    onSuccess: async (response) => {
      console.log("Login successful", response);
-     const { email, name, googleId } = response; 
+     const { email, name } = response; 
      try {
        const res = await axios.post("http://127.0.0.1:5555/login/authorized", {
          token: access_token,

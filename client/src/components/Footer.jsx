@@ -10,10 +10,14 @@ const Footer = () => {
   return (
     <div className="flex flex-col md:flex-row h-auto md:h-[400px] mx-3 mb-2 bg-black ">
       <div className="font-libre flex flex-col md:grid md:grid-cols-3 md:my-[50px] w-full gap-[100px] md:mx-8 mx-3 my-[60px]">
-        <Text className="text-grey font-bold text-6xl flex flex-col items-center">
-          Naran
-          <span className="text-gold text-xl flex justify-center">Jackson</span>
-        </Text>
+        <Link to={"/"} >
+          <Text className="text-grey font-bold text-6xl flex flex-col items-center cursor-pointer">
+            Naran
+            <span className="text-gold text-xl flex justify-center">
+              Jackson
+            </span>
+          </Text>
+        </Link>
         <div className="flex flex-col md:mt-4 w-full md:w-[500px]">
           <Text className="text-xl font-semibold text-grey uppercase flex justify-center md:justify-start">
             Contact

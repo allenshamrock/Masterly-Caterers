@@ -16,7 +16,9 @@ function Recipe() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`http://localhost:3000/recipesInfo/${id}`);
+        const response = await fetch(
+          `https://masterly-backend.onrender.com/recipesInfo/${id}`
+        );
         if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
         const data = await response.json();
         setData(data);
@@ -24,7 +26,9 @@ function Recipe() {
         // Fetch next recipe data
         const nextId = parseInt(id) + 1;
         try {
-          const nextResponse = await fetch(`http://localhost:3000/recipesInfo/${nextId}`);
+          const nextResponse = await fetch(
+            `https://masterly-backend.onrender.com/recipesInfo/${nextId}`
+          );
           if (nextResponse.ok) {
             const nextData = await nextResponse.json();
             setNextRecipe(nextData);
@@ -36,7 +40,9 @@ function Recipe() {
         // Fetch previous recipe data
         const previousId = parseInt(id) - 1;
         try {
-          const previousResponse = await fetch(`http://localhost:3000/recipesInfo/${previousId}`);
+          const previousResponse = await fetch(
+            `https://masterly-backend.onrender.com/recipesInfo/${previousId}`
+          );
           if (previousResponse.ok) {
             const previousData = await previousResponse.json();
             setPreviousRecipe(previousData);
@@ -64,7 +70,7 @@ function Recipe() {
   };
 
   if (loading) {
-    return <div className="text-2xl font-bold text-center">Loading...</div>;
+    return <div className="text-2xl font-bold flex justify-center items-center text-center">Loading...</div>;
   }
 
   if (error) {

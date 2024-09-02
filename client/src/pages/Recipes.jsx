@@ -10,7 +10,9 @@ function Recipes() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/recipesInfo");
+        const response = await fetch(
+          "https://masterly-backend.onrender.com/recipesInfo "
+        );
         if (!response.ok)
           throw new Error(`Https Error! status: ${response.status}`);
         const data = await response.json();
