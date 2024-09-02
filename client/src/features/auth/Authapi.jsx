@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials, logout } from "./Authslice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://127.0.0.1:5555",
+  baseUrl: "https://masterly-caterers.onrender.com",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const accessToken = getState().auth.accessToken; //Accesstoken when login is successful
@@ -54,7 +54,7 @@ export const apiSlice = createApi({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: "/login",
+        url: "https://masterly-caterers.onrender.com/login",
         method: "POST",
         body: credentials,
       }),

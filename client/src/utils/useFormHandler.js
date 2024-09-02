@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 const useFormHandler = (initialState, user, toast) => {
@@ -46,10 +45,13 @@ const useFormHandler = (initialState, user, toast) => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://127.0.0.1:5555/blogs", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://masterly-caterers.onrender.com/blogs",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.json();

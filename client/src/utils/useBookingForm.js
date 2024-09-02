@@ -20,7 +20,6 @@ const useBookingForm = (initialState, toast, user) => {
     setError(null);
     setSuccess(null);
 
-    
     const payload = {
       user_id: user.id,
       event_date: input.event_date,
@@ -30,13 +29,16 @@ const useBookingForm = (initialState, toast, user) => {
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:5555/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", 
-        },
-        body: JSON.stringify(payload), 
-      });
+      const response = await fetch(
+        "https://masterly-caterers.onrender.com/bookings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!response.ok) {
         const errorMessage = await response.json();

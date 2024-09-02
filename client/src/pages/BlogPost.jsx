@@ -30,12 +30,15 @@ const BlogPost = () => {
   const toast = useToast();
   const deleteBlog = async (blogId) => {
     try {
-      const response = await fetch(`http://127.0.0.1:5555/blogs/${blogId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `https://masterly-caterers.onrender.com/blogs/${blogId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       // console.log(response);
 
       if (!response.ok) {

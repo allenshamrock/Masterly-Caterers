@@ -11,8 +11,8 @@ const useFetchBlogs = (blogId = null) => {
       setIsLoading(true);
       try {
         const url = blogId
-          ? `http://127.0.0.1:5555/blogs/${blogId}`
-          : "http://127.0.0.1:5555/blogs";
+          ? `https://masterly-caterers.onrender.com/blogs/${blogId}`
+          : "https://masterly-caterers.onrender.com/blogs";
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch blogs");
