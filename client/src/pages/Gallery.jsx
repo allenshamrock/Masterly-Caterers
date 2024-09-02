@@ -24,6 +24,7 @@ import GalleryContainer from "../components/GalleryContainer";
 const Gallery = () => {
   const role = useSelector(selectCurrentIsRole);
   const user = useSelector(selectUserData);
+  console.log(user.id)
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toast = useToast();

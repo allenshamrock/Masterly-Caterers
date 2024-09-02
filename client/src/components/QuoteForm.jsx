@@ -1,7 +1,10 @@
 import { Textarea } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 
 const QuoteForm = ({ input, handleChange, handleSubmit, isLoading }) => {
+  // Get today's date in the format yyyy-mm-dd
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <form className="block font-libre w-full" onSubmit={handleSubmit}>
       <h1 className="text-2xl text-slate-900 font-semibold">Make a booking</h1>
@@ -9,6 +12,8 @@ const QuoteForm = ({ input, handleChange, handleSubmit, isLoading }) => {
         name="event_date"
         value={input.event_date}
         onChange={handleChange}
+        type="date"
+        min={today} // Set minimum date to today
         placeholder="Event date"
         className="rounded-xl border-slate-400 my-3 p-3 w-full border-2"
       />

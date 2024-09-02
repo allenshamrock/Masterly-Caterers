@@ -19,28 +19,32 @@ const useBookingForm = (initialState, toast, user) => {
     setIsloading(true);
     setError(null);
     setSuccess(null);
-    const formData = new FormData();
-    formData.append("user_id", user.id);
-    formData.append("event_date", input.event_date);
-    formData.append("event_type", input.event_type);
-    formData.append("guest_count", input.guest_count);
-    formData.append("special_requests", input.special_requests);
 
-     
-
+    // Prepare JSON payload
+    const payload = {
+      user_id: user.id,
+      event_date: input.event_date,
+      event_type: input.event_type,
+      guest_count: input.guest_count,
+      special_requests: input.special_requests,
+    };
 
     try {
       const response = await fetch("http://127.0.0.1:5555/bookings", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json", // Set content type to JSON
+        },
+        body: JSON.stringify(payload), // Convert payload to JSON string
       });
+
       if (!response.ok) {
         const errorMessage = await response.json();
         setError(
-          errorMessage.error || "An error occured,please try again later"
+          errorMessage.error || "An error occurred, please try again later."
         );
       } else {
-        setSuccess("Quote created successfully ");
+        setSuccess("Quote created successfully");
         setInput({
           event_date: "",
           event_type: "",
@@ -51,11 +55,12 @@ const useBookingForm = (initialState, toast, user) => {
       }
       showToast();
     } catch (error) {
-      setError("An error occured.Try again later");
+      setError("An error occurred. Try again later.");
     } finally {
       setIsloading(false);
     }
   };
+
   const showToast = () => {
     toast({
       title: "Post Created!",
@@ -76,4 +81,5 @@ const useBookingForm = (initialState, toast, user) => {
     handleSubmit,
   };
 };
+
 export default useBookingForm;

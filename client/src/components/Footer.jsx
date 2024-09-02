@@ -18,13 +18,13 @@ const Footer = () => {
           <Text className="text-xl font-semibold text-grey uppercase flex justify-center md:justify-start">
             Contact
           </Text>
-          <Text className="text-lg capitalize text-grey font-semibold justify-center md:justify-start flex flex-wrap md:flex-nowrap">
+          <Text className="text-md capitalize text-grey font-semibold justify-center md:justify-start flex flex-wrap md:flex-nowrap">
             general inquiries:
             <span className="text-grey lowercase font-semibold ml-1">
               naranjackson@gmail.com
             </span>
           </Text>
-          <Text className="text-lg capitalize text-grey font-semibold justify-center md:justify-start flex flex-wrap md:flex-nowrap mt-2">
+          <Text className="text-md capitalize text-grey font-semibold justify-center md:justify-start flex flex-wrap md:flex-nowrap mt-2">
             telephone number:
             <span className="text-grey lowercase font-semibold ml-1">
               +2547 7202 479 80

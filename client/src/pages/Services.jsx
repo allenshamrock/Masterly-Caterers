@@ -31,7 +31,7 @@ function Services() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const user = useSelector(selectUserData);
-  // console.log(user.id)
+    // console.log(user.id)
   const { input, isLoading, handleChange, handleSubmit } = useBookingForm(
     {
       user_id: user.id,
@@ -40,8 +40,8 @@ function Services() {
       guest_count: "",
       special_requests: "",
     },
-    user,
-    toast
+    toast,
+    user
   );
 
   return (

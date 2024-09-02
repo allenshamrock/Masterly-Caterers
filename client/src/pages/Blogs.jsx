@@ -24,6 +24,7 @@ import useFormHandler from "../utils/useFormHandler";
 const Blogs = () => {
   const role = useSelector(selectCurrentIsRole);
   const user = useSelector(selectUserData);
+  // console.log(user.id)
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const toast = useToast();
