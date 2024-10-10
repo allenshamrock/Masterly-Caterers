@@ -80,7 +80,7 @@ const BlogPost = () => {
     <div className="h-auto w-full">
       <div className="mx-2 my-2 relative font-libre">
         <img
-          src="/blogHero.jpeg"
+          src="/blogHero.jpeg "
           alt="Blog hero"
           className="object-cover object-center w-full h-auto md:h-[500px] relative "
         />
